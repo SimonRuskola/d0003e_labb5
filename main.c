@@ -1,18 +1,28 @@
-/*
- * d0003e_labb5.c
- *
- * Created: 2023-02-24 11:10:07
- * Author : simon
- */ 
 
+#include "usart.h"
 #include <avr/io.h>
+#include "lcd.h"
 
 
-int main(void)
+
+#define FOSC 1843200// Clock Speed
+#define BAUD 9600
+#define MYUBRR FOSC/16/BAUD-1
+
+
+void main( void )
 {
-    /* Replace with your application code */
-    while (1) 
-    {
-    }
+
+LCD_Init();
+USART_Init ( MYUBRR );
+int temp;
+while (1)
+{
+    USART_Transmit(5);
+    temp =USART_Receive();
+    printAt(temp,0);
 }
 
+
+
+}
