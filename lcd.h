@@ -17,3 +17,5 @@
 
 void LCD_Init(void);
 void printAt(long num, int pos);
+void writeChar(char ch, int pos);
+int getValueArray(int i);
