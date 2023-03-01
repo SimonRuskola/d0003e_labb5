@@ -59,21 +59,13 @@ pid_t tcgetsid(int fildes);
 */
    
 
-int openFile(){
-
-    int temp = open(PATH, O_RDWR);
-	return temp;
-}
-
 
 void main( void )
 {
- 
-
    //printf("Hello World!");
-   int file = openFile();
-   printf("%d",file);
-   //debugFile = open(DEBUG_PATH, O_RDWR);
+   //int tcgetattr(NULL);
+   //int tcdrain(NULL);
+   int tcgetattr(int fd, struct termios *termios_p);
 
 
 }
