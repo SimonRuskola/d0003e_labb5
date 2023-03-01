@@ -16,11 +16,11 @@ void main( void )
 LCD_Init();
 USART_Init ( MYUBRR );
 int temp;
-while (1)
+for(int i = 65;i<100; i++)
 {
-    USART_Transmit(5);
-    temp =USART_Receive();
-    printAt(temp,0);
+    USART_Transmit('B');
+    //temp = USART_Receive();
+    printAt(65,0);
 }
 
 
