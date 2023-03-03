@@ -23,57 +23,105 @@
 #include <pthread.h>
 #include <io.h>
 
-/*
 
-int tcgetattr(int fildes, struct termios *termios_p);
-
-int tcsetattr(int fildes, int optional_actions,
-	const struct termios *termios_p);
-
-int tcsendbreak(int fildes, int duration);
-
-int tcdrain(int fildes);
-
-int tcflush(int fildes, int queue_selector);
-
-int tcflow(int fildes, int action);
-
-speed_t cfgetospeed(const struct termios *termios_p);
-
-int cfsetospeed(struct termios *termios_p, speed_t speed);
-
-speed_t cfgetispeed(const struct termios *termios_p);
-
-int cfsetispeed(struct termios *termios_p, speed_t speed);
-
-#include <sys/types.h>
-
-
-pid_t tcgetpgrp(int fildes);
-
-int tcsetpgrp(int fildes, pid_t pgid);
-
-pid_t tcgetsid(int fildes);
-
-
-*/
-   
 
 int openFile(){
 
     int temp = open(PATH, O_RDWR);
+	
+	if(temp >= 0){
+		printf("Sucsess!\n");
+	}
+	else{
+		printf("Could not open the file\n");
+	}
+	
 	return temp;
 }
 
 
+
+
 void main( void )
 {
- 
 
    //printf("Hello World!");
-   int file = openFile();
-   printf("%d",file);
-   //debugFile = open(DEBUG_PATH, O_RDWR);
+   struct termios test;
+   int fildes = 5;
+   
+   
+   int tcgetattr(fildes, termios);
 
 
+int tcsetattr(int fildes, int optional_actions,
+	const struct termios *termios_p);
+
+
+int tcsendbreak(int fildes, int duration);
+
+
+int tcdrain(int fildes);
+
+
+int tcflush(int fildes, int queue_selector);
+
+
+int tcflow(int fildes, int action);
+
+
+speed_t cfgetospeed(const struct termios *termios_p);
+
+
+int cfsetospeed(struct termios *termios_p, speed_t speed);
+
+
+speed_t cfgetispeed(const struct termios *termios_p);
+
+
+int cfsetispeed(struct termios *termios_p, speed_t speed);
+
+
+   
+   //int file = openFile();
+   //printf("%d",3);
+   //printf("%d",file);
+
+
+
+}
+
+
+void parseData(int* input, int* output, int* northQueue, int* southQueue, int* northIncomming, int* southIncomming, int* northLeft, int* southLeft, int *localChanged){
+	
+	*output = 0b0000;
+	
+	if(checkTimeOut()){
+		if(getLightState(input, NORTH) && *northQueue){
+			carOnBridge(NORTH);
+			letCarOverBridge(output, northQueue, northLeft, NORTH);
+			*localChanged = 1;
+			
+		}
+		if(getLightState(input, SOUTH) && *southQueue){
+			carOnBridge(SOUTH);
+			letCarOverBridge(output, southQueue, southLeft, SOUTH);
+			*localChanged = 1;
+		}
+	}
+	
+	if(*northIncomming){
+		addCarToQueue(output, northQueue, northIncomming, NORTH);
+		*localChanged = 1;
+	}
+	
+	if(*southIncomming){
+		addCarToQueue(output, southQueue, southIncomming, SOUTH);
+		*localChanged = 1;
+	}
+	
+	if(carCrash(output)){
+		printf("Full fart framåt o inga bromsar!!  ÅÅÅÅNEEEEJ BARN FAMILJEN\n");
+		*localChanged = 1;
+	}
+	
 }
