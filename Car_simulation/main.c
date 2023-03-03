@@ -25,6 +25,7 @@
 
 
 
+<<<<<<< HEAD
 int openFile(){
 
     int temp = open(PATH, O_RDWR);
@@ -39,11 +40,14 @@ int openFile(){
 	return temp;
 }
 
+=======
+>>>>>>> fcaa19f99444163ebdd8992675e34b6d3f6ee585
 
 
 
 void main( void )
 {
+<<<<<<< HEAD
 
    //printf("Hello World!");
    struct termios test;
@@ -86,6 +90,12 @@ int cfsetispeed(struct termios *termios_p, speed_t speed);
    //printf("%d",3);
    //printf("%d",file);
 
+=======
+   //printf("Hello World!");
+   //int tcgetattr(NULL);
+   //int tcdrain(NULL);
+   int tcgetattr(int fd, struct termios *termios_p);
+>>>>>>> fcaa19f99444163ebdd8992675e34b6d3f6ee585
 
 
 }
