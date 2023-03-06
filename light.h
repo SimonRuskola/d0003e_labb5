@@ -6,6 +6,8 @@
 
 #define north 1
 #define south 0
+#define green 1
+#define red   0
 
 typedef struct {
     Object super;
