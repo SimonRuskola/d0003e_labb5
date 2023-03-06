@@ -1,137 +1,69 @@
 
 
 
-#define PATH "/dev/ttyS2"
 
-#include <termios.h>
-//#include <sys/termios.h>
-//#include <sys/termios.h>
-//#include "sysroot/usr/include/termios.h"
-//#include "C:\cygwin64\usr\include\termios.h"
-
-//#include </usr/include/machine/termios.h>
-//#include </usr/include/sys/termios.h>
-//#include </usr/include/termios.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <io.h>
 
+#include <termios.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 
-<<<<<<< HEAD
-int openFile(){
+#define north 1
+#define south 0
+#define green 1
+#define red   0
 
-    int temp = open(PATH, O_RDWR);
-	
-	if(temp >= 0){
-		printf("Sucsess!\n");
-	}
-	else{
-		printf("Could not open the file\n");
-	}
-	
-	return temp;
-}
+#define PATH "/dev/ttyS0"
 
-=======
->>>>>>> fcaa19f99444163ebdd8992675e34b6d3f6ee585
+unsigned int com3;
+
+struct bridgeStatus{
+   unsigned int southQ;
+   unsigned int northQ;
+   unsigned int northboundTrafficlight;
+   unsigned int southboundTrafficlight;
+};
+
 
 
 
 void main( void )
 {
-<<<<<<< HEAD
+	struct termios com3Config;
+	com3 = open(PATH, O_RDWR);
 
-   //printf("Hello World!");
-   struct termios test;
-   int fildes = 5;
-   
-   
-   int tcgetattr(fildes, termios);
+	if(tcgetattr(com3, &com3Config) < 0)
+	{
+		printf("Com3 broken\n");
+	}
 
-
-int tcsetattr(int fildes, int optional_actions,
-	const struct termios *termios_p);
-
-
-int tcsendbreak(int fildes, int duration);
-
-
-int tcdrain(int fildes);
+	com3Config.c_cflag = CS8 | CSTOPB | CLOCAL | CREAD;
+	com3Config.c_oflag = 0;	
+	com3Config.c_iflag = 0;
+	com3Config.c_lflag = 0;
+	//com3Config.c_cc[VMIN]  = 1;
+	//com3Config.c_cc[VTIME] = 5;
 
 
-int tcflush(int fildes, int queue_selector);
+	while (1)
+	{
+		/* code */
+	}
+	
 
 
-int tcflow(int fildes, int action);
-
-
-speed_t cfgetospeed(const struct termios *termios_p);
-
-
-int cfsetospeed(struct termios *termios_p, speed_t speed);
-
-
-speed_t cfgetispeed(const struct termios *termios_p);
-
-
-int cfsetispeed(struct termios *termios_p, speed_t speed);
-
-
-   
-   //int file = openFile();
-   //printf("%d",3);
-   //printf("%d",file);
-
-=======
-   //printf("Hello World!");
-   //int tcgetattr(NULL);
-   //int tcdrain(NULL);
-   int tcgetattr(int fd, struct termios *termios_p);
->>>>>>> fcaa19f99444163ebdd8992675e34b6d3f6ee585
 
 
 }
 
 
-void parseData(int* input, int* output, int* northQueue, int* southQueue, int* northIncomming, int* southIncomming, int* northLeft, int* southLeft, int *localChanged){
-	
-	*output = 0b0000;
-	
-	if(checkTimeOut()){
-		if(getLightState(input, NORTH) && *northQueue){
-			carOnBridge(NORTH);
-			letCarOverBridge(output, northQueue, northLeft, NORTH);
-			*localChanged = 1;
-			
-		}
-		if(getLightState(input, SOUTH) && *southQueue){
-			carOnBridge(SOUTH);
-			letCarOverBridge(output, southQueue, southLeft, SOUTH);
-			*localChanged = 1;
-		}
-	}
-	
-	if(*northIncomming){
-		addCarToQueue(output, northQueue, northIncomming, NORTH);
-		*localChanged = 1;
-	}
-	
-	if(*southIncomming){
-		addCarToQueue(output, southQueue, southIncomming, SOUTH);
-		*localChanged = 1;
-	}
-	
-	if(carCrash(output)){
-		printf("Full fart framåt o inga bromsar!!  ÅÅÅÅNEEEEJ BARN FAMILJEN\n");
-		*localChanged = 1;
-	}
-	
-}
+
