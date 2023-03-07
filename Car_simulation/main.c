@@ -54,6 +54,9 @@ void main( void )
 	//com3Config.c_cc[VTIME] = 5;
 
 
+	write(com3,'A',1);
+
+
 	while (1)
 	{
 		/* code */
