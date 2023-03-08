@@ -36,41 +36,49 @@ struct bridgeStatus{
 };
 
 
-void main( void )
+int main( void )
 {
 	unsigned int test;
 	struct termios com3Config;
 	unsigned int input;
 	com3File = open(PATH, O_RDWR);
-	test = read(com3File, &input, 1);
+
+	if(com3File < 0){
+		printf("com3File broke\n");
+
+	}
 
 	
+	if(tcgetattr(com3File, &com3Config) < 0)
+	{
+		printf("com3 tcgetattr broken\n");
+	}
 
+	//com3Config.c_cflag = CS8 
 	//com3Config.c_cflag = CS8 | CSTOPB | CLOCAL | CREAD;
 	//com3Config.c_oflag = 0;	
 	//com3Config.c_iflag = 0;
 	//com3Config.c_lflag = 0;
 	//com3Config.c_cc[VTIME] = 5;
 	//com3Config.c_cc[VMIN]  = 1;
-	write(com3File,&test,1);
+
+
+	test = read(com3File, &input, 1);
+	if(test < 0)
+	{
+		printf("com3 read broke\n");
+	}
+
+	
+	//write(com3File,&test,1);
 
 	printf("%d\n",3);
-	if(tcgetattr(com3File, &com3Config) < 0)
-	{
-		printf("%d\n",test);
-		printf("%d\n",input);
-		printf("Com3 broken\n");
-	}
-
-
-
-
+	printf("%d\n",input);
+	printf("%d\n",test);
 
 	
 	
-	while (1)
-	{
-	}
+	return
 	
 
 
