@@ -144,7 +144,19 @@
     <Compile Include="lcd.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="light.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="light.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="run.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="run.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="TinyTimber.c">

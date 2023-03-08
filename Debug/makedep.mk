@@ -4,7 +4,11 @@
 
 lcd.c
 
+light.c
+
 main.c
+
+run.c
 
 TinyTimber.c
 

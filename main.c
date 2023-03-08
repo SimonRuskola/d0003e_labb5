@@ -10,6 +10,6 @@ runObj mainObj = initRun;
 void main( void )
 {
 
-    TINYTIMBER(*mainObj, run, NULL);
+    TINYTIMBER(&mainObj, run, NULL);
 
 }

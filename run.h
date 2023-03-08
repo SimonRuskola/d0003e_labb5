@@ -1,6 +1,7 @@
 
 #include "TinyTimber.h"
 #include "lcd.h"
+#include "usart.h"
 
 
 #define FOSC 1843200// Clock Speed

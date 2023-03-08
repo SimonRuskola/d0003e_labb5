@@ -21,7 +21,7 @@ unsigned int USART_Receive( void )
 {
 unsigned char status, resh, resl;
 /* Wait for data to be received */
-while ( !(UCSR0A & (1<<RXC0)) );
+//while ( !(UCSR0A & (1<<RXC0)) );
 /* Get status and 9th bit, then data */
 /* from buffer */
 status = UCSR0A;
