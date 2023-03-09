@@ -11,8 +11,8 @@ UBRR0H = (unsigned char)(ubrr>>8);
 UBRR0L = (unsigned char)ubrr;
 /* Enable receiver and transmitter  and enables interupts*/
 UCSR0B = (1<<RXEN0)|(1<<TXEN0) | (1 << RXCIE0) | (1 << TXCIE0);
-/* Set frame format: 8data, 2stop bit */
-UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+/* Set frame format: 8 data, 1 stop bit */
+UCSR0C = (0<<USBS0)|(3<<UCSZ00)|(0<<4)|(0<<5); // upm1/upm0
 
 }
 
@@ -56,4 +56,24 @@ void USART_Flush( void )
 {
 unsigned char dummy;
 while ( UCSR0A & (1<<RXC0) ) dummy = UDR0;
+}
+
+
+void pushToSerial(unsigned int data){
+	
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = data;
+		
+
+}
+
+
+int pullFromSerial(void){
+	
+	LCDDR0 ^= (1 << 1);
+	
+	while(!(UCSR0A & (1<<RXC0)));
+	
+	return UDR0;
+			
 }

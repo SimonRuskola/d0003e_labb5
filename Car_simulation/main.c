@@ -27,20 +27,86 @@
 #define PATH "/dev/ttyS2"
 
 unsigned int com3File;
+char keyboardInput;
+unsigned int com3Input;
 
-struct bridgeStatus{
-   unsigned int southQ;
-   unsigned int northQ;
-   unsigned int northboundTrafficlight;
-   unsigned int southboundTrafficlight;
-};
+pthread_mutex_t bridgeMutex;
+
+
+unsigned int southQ;
+unsigned int northQ;
+unsigned int northboundRedLight;
+unsigned int northboundGreenLight;
+unsigned int southboundRedLight;
+unsigned int southboundGreenLight;
+unsigned int carsOnBridge;
+
+void update(void){
+	printf("--------------------------------------------\n");
+	printf("Cars in north queue: %d\n", northQ);
+	printf("Cars in south queue: %d\n", southQ);
+	printf("Cars on the bridge:  %d\n", carsOnBridge);
+	printf("Cars on the bridge:  %d\n", carsOnBridge);
+	printf("Red north light:  %d\n", carsOnBridge);
+	printf("South red: %d\nSouth north: %d\nNorth red: %d\nNorth green: %d\n", southboundRedLight, southboundGreenLight, northboundRedLight, northboundGreenLight);
+	printf("--------------------------------------------\n");
+
+	// write to serial port
+}
+
+
+void *readKeyboard(void *vargp){
+	while(1){
+		
+		keyboardInput = getchar();
+		
+		if(keyboardInput == 's'){
+			southQ++;
+			update();
+		
+		}
+		else if(keyboardInput == 'n'){
+			northQ++;
+			update();
+			
+
+			
+		}
+		else if(keyboardInput == 'e'){
+			//system.die
+		}
+		
+	}
+}
+
+void *readCom3(void *vargp){
+	while (1)
+	{
+		read(com3File, &com3Input, 1);
+
+		if(com3Input & (1)){ // true if north green is on
+		    
+		}if(com3Input & (1<<1)){ // true if north red is on
+
+		}if(com3Input & (1<<2)){ // true if south green is on
+
+		}if(com3Input & (1<<3)){ // true if south red is on
+
+		}
+
+	}
+	
+}
+
+void pushCarToBridge(void){
+
+}
 
 
 int main( void )
 {
 	unsigned int test;
 	struct termios com3Config;
-	unsigned int input;
 	com3File = open(PATH, O_RDWR);
 
 	if(com3File < 0){
@@ -48,13 +114,19 @@ int main( void )
 
 	}
 
+
 	
+	if(cfsetispeed(&com3Config, B9600) < 0 || cfsetospeed(&com3Config, B9600) < 0) {
+
+		printf("Com3 speed broke.\n");
+	}
 	if(tcgetattr(com3File, &com3Config) < 0)
 	{
 		printf("com3 tcgetattr broken\n");
 	}
 
-	//com3Config.c_cflag = CS8 
+	com3Config.c_cflag = CS8; 
+
 	//com3Config.c_cflag = CS8 | CSTOPB | CLOCAL | CREAD;
 	//com3Config.c_oflag = 0;	
 	//com3Config.c_iflag = 0;
@@ -62,29 +134,44 @@ int main( void )
 	//com3Config.c_cc[VTIME] = 5;
 	//com3Config.c_cc[VMIN]  = 1;
 
-
-	test = read(com3File, &input, 1);
-	if(test < 0)
-	{
-		printf("com3 read broke\n");
-	}
-
 	
 	//write(com3File,&test,1);
 
-	printf("%d\n",3);
-	printf("%d\n",input);
-	printf("%d\n",test);
+	//printf("%d\n",3);
+	//printf("%d\n",test);
+
+	update();
+
+
+	pthread_t readKeyboard_th;
+	pthread_create(&readKeyboard_th, NULL, readKeyboard, NULL);
+
+	//test = read(com3File, &com3Input, 1);
+	if(test == (-1))
+	{
+		printf("com3 read broke %d\n", test);
+		
+	}else{
+		printf("com3 worked %d\n", test);
+	}
+
+	printf("error message: %d\n",test);
+	printf("input: %d\n",com3Input);
+
+
+	while (1)
+	{
+	
+	}
+	
+
 
 	
-	
-	return
-	
-
-
-
 
 }
+
+
+
 
 
 
