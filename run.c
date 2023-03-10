@@ -17,15 +17,15 @@ void run(runObj* self){
     //printAt(test, 2);
     int i = 1;
     while(1){
+        //USART_Transmit(0x1);
 
-        pushToSerial(i);
-        i++;
-        test = pullFromSerial;
-        USART_Flush();
-        printAt(test,0);
+        //pushToSerial(i);
+        //i++;
+        //test = pullFromSerial;
+        //USART_Flush();
+        //printAt(test,0);
 
         //pushToSerial(0x1);
-        //USART_Transmit(0x1);
     }
 
 }

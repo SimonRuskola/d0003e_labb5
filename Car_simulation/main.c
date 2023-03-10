@@ -46,9 +46,7 @@ void update(void){
 	printf("Cars in north queue: %d\n", northQ);
 	printf("Cars in south queue: %d\n", southQ);
 	printf("Cars on the bridge:  %d\n", carsOnBridge);
-	printf("Cars on the bridge:  %d\n", carsOnBridge);
-	printf("Red north light:  %d\n", carsOnBridge);
-	printf("South red: %d\nSouth north: %d\nNorth red: %d\nNorth green: %d\n", southboundRedLight, southboundGreenLight, northboundRedLight, northboundGreenLight);
+	printf("South red: %d\nSouth green: %d\nNorth red: %d\nNorth green: %d\n", southboundRedLight, southboundGreenLight, northboundRedLight, northboundGreenLight);
 	printf("--------------------------------------------\n");
 
 	// write to serial port
@@ -109,23 +107,31 @@ int main( void )
 	struct termios com3Config;
 	com3File = open(PATH, O_RDWR);
 
-	if(com3File < 0){
+	if(com3File == (-1)){
 		printf("com3File broke\n");
 
 	}
+	printf("%d\n",com3File);
 
+	if(tcgetattr(com3File, &com3Config) < 0)
+	{
+		printf("com3 tcgetattr broken\n");
+	}
 
 	
 	if(cfsetispeed(&com3Config, B9600) < 0 || cfsetospeed(&com3Config, B9600) < 0) {
 
 		printf("Com3 speed broke.\n");
 	}
-	if(tcgetattr(com3File, &com3Config) < 0)
-	{
-		printf("com3 tcgetattr broken\n");
-	}
 
-	com3Config.c_cflag = CS8; 
+	com3Config.c_cflag = CS8;  // 8 bits
+
+	com3Config.c_cflag &= ~CSTOPB;  // only 1 stop bit
+
+	com3Config.c_cflag &= ~PARENB; // no parity bit
+
+	com3Config.c_lflag &= ~(ICANON | ECHO | ISIG);  // something
+
 
 	//com3Config.c_cflag = CS8 | CSTOPB | CLOCAL | CREAD;
 	//com3Config.c_oflag = 0;	
@@ -140,13 +146,21 @@ int main( void )
 	//printf("%d\n",3);
 	//printf("%d\n",test);
 
+	if(tcgetattr(com3File, &com3Config) < 0)
+	{
+		printf("com3 tcgetattr broken2\n");
+	}
+
+
+
+
 	update();
 
 
 	pthread_t readKeyboard_th;
 	pthread_create(&readKeyboard_th, NULL, readKeyboard, NULL);
 
-	//test = read(com3File, &com3Input, 1);
+	test = read(com3File, &com3Input, 1);
 	if(test == (-1))
 	{
 		printf("com3 read broke %d\n", test);
