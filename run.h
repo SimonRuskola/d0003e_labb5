@@ -1,20 +1,20 @@
 
 #include "TinyTimber.h"
 #include "lcd.h"
-#include "usart.h"
+#include "light.h"
 
 
-#define FOSC 1843200// Clock Speed
-#define BAUD 9600
-#define MYUBRR FOSC/16/BAUD-1
+
 
 typedef struct{
 	Object super;
+	serialObj* serial;
+	lightsObject* lights;
     
 } runObj;
 
 
-#define initRun {initObject()}
+#define initRun(serial, lights) {initObject(), serial, lights}
 
 void run(runObj* self);
 void interupts(runObj* self);

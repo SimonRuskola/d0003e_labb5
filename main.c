@@ -1,15 +1,23 @@
 
-#include "usart.h"
 #include <avr/io.h>
 #include "run.h"
 
 
-runObj mainObj = initRun;
+
+serialObj serial  = initUsart; 
+lightsObject lights = initLightsObject(&serial);
+runObj mainObj = initRun(&serial, &lights);
 
 
-void main( void )
+int main( void )
 {
 
     TINYTIMBER(&mainObj, run, NULL);
+
+    while (1)
+    {
+        
+    }
+    
 
 }

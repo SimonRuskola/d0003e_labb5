@@ -24,8 +24,6 @@
 
 
 
-#define PATH "/dev/ttyS2"
-
 unsigned int com3File;
 char keyboardInput;
 unsigned int com3Input;
@@ -105,24 +103,28 @@ int main( void )
 {
 	unsigned int test;
 	struct termios com3Config;
-	com3File = open(PATH, O_RDWR);
+	com3File = open("/dev/ttyS2", O_RDWR);
 
 	if(com3File == (-1)){
 		printf("com3File broke\n");
 
 	}
-	printf("%d\n",com3File);
+	//printf("com3File: %d\n",com3File);
+	printf("after acom3f");
 
 	if(tcgetattr(com3File, &com3Config) < 0)
 	{
 		printf("com3 tcgetattr broken\n");
 	}
 
+	printf("after attr1");
+
 	
 	if(cfsetispeed(&com3Config, B9600) < 0 || cfsetospeed(&com3Config, B9600) < 0) {
 
 		printf("Com3 speed broke.\n");
 	}
+	printf("after speed");
 
 	com3Config.c_cflag = CS8;  // 8 bits
 
@@ -130,7 +132,9 @@ int main( void )
 
 	com3Config.c_cflag &= ~PARENB; // no parity bit
 
-	com3Config.c_lflag &= ~(ICANON | ECHO | ISIG);  // something
+	printf("after config");
+
+	//com3Config.c_lflag &= ~(ICANON | ECHO | ISIG);  // something
 
 
 	//com3Config.c_cflag = CS8 | CSTOPB | CLOCAL | CREAD;
@@ -141,7 +145,6 @@ int main( void )
 	//com3Config.c_cc[VMIN]  = 1;
 
 	
-	//write(com3File,&test,1);
 
 	//printf("%d\n",3);
 	//printf("%d\n",test);
@@ -151,16 +154,24 @@ int main( void )
 		printf("com3 tcgetattr broken2\n");
 	}
 
+	printf("after attr2");
 
 
 
-	update();
+
+	//update();
 
 
-	pthread_t readKeyboard_th;
-	pthread_create(&readKeyboard_th, NULL, readKeyboard, NULL);
+	//pthread_t readKeyboard_th;
+	//pthread_create(&readKeyboard_th, NULL, readKeyboard, NULL);
 
+	unsigned int test2 = 12;
+
+	write(com3File,&test2,1);
+	
+	printf("before read");
 	test = read(com3File, &com3Input, 1);
+	printf("after read");
 	if(test == (-1))
 	{
 		printf("com3 read broke %d\n", test);

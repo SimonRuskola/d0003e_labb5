@@ -1,8 +1,9 @@
 
 
 #include "TinyTimber.h"
+#include "usart.h"
 
-#define initLightsObject {initObject(),0,0,0,0,0}
+#define initLightsObject(serial) {initObject(),serial,0,0,0,0,0,0}
 
 #define north 1
 #define south 0
@@ -11,6 +12,7 @@
 
 typedef struct {
     Object super;
+    serialObj* serial;
     int carsOnBridge;
     int carsNorth;
     int carsSouth;

@@ -27,17 +27,57 @@ void carOffBridge(lightsObject* self){
     updateLCD(self);
 }
 
-void lightUpdate(lightsObject* self){
+
+void switchLight(lightsObject* self){
     if(self->direction == north){
         self->direction == south;
-        self->southLight = 1;
-        //send info to pc about light switch
-    }else if(self->direction == south){
+    }else{
         self->direction == north;
-        self->northLight = 1;
-         //send info to pc about light switch
     }
+
+    ASYNC(self, nextLight, 1);
+
 }
+
+void nextLight(lightsObject* self, int i){
+
+    if(i >= 5){
+        AFTER(MSEC(5000),self, switchLight, NULL);
+    }else{
+        if(self->direction == north){
+            ASYNC(self->serial, USART_Transmit, 0x9) // 0x9 = 1001  green north and red south on
+            ASYNC(self->serial, USART_Transmit, 0x5) // 0x5 = 0101 all red on and green off
+        }else if(self->direction == south){
+            ASYNC(self->serial, USART_Transmit, 0x6) // 0x6 = 0110 green south and red north on
+            ASYNC(self->serial, USART_Transmit, 0x5) // 0x5 = 0101 all red on and green off
+        }
+
+        AFTER(MSEC(1000),self, nextLight, i+1);
+
+    }
+
+
+    
+}
+
+void lightUpdate(lightsObject* self){
+    if(self->carsNorth>=self->carsSouth){
+        ASYNC(self->serial, USART_Transmit, 0x9) // 0x9 = 1001  green north and red south on
+        ASYNC(self->serial, USART_Transmit, 0x5) // 0x5 = 0101 all red on and green off
+        self->direction = north; 
+    }else{
+        ASYNC(self->serial, USART_Transmit, 0x6) // 0x6 = 0110 green south and red north on
+        ASYNC(self->serial, USART_Transmit, 0x5) // 0x5 = 0101 all red on and green off
+        self->direction = south;
+    }
+
+
+    AFTER(MSEC(1000),self, nextLight, 1);
+
+    
+}
+
+
 
 void updateLCD(lightsObject* self){
     printAt(self->carsNorth,0);

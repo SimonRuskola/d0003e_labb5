@@ -4,16 +4,23 @@
 
 
 
-//typedef struct{
-//    Object super;
-//    int inData;
-//    int outData;
-//} serialObj;
+#define FOSC 1843200// Clock Speed
+#define BAUD 9600
+#define MYUBRR FOSC/16/BAUD-1
 
 
-void USART_Init( unsigned int ubrr);
-unsigned int USART_Receive( void );
-void USART_Transmit( unsigned int data );
+typedef struct{
+    Object super;
+    int inData;
+    int outData;
+} serialObj;
+
+#define initUsart {initObject(), 0, 0}
+
+
+void USART_Init(serialObj* self);
+unsigned int USART_Receive(serialObj* self);
+void USART_Transmit(serialObj* self, unsigned int data );
 void pushToSerial(unsigned int data);
 int pullFromSerial(void);
 void USART_Flush( void );

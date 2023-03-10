@@ -4,11 +4,11 @@
 
 
 
-void USART_Init( unsigned int ubrr)
+void USART_Init(serialObj* self)
 {
 /* Set baud rate */
-UBRR0H = (unsigned char)(ubrr>>8);
-UBRR0L = (unsigned char)ubrr;
+UBRR0H = (unsigned char)(MYUBRR>>8);
+UBRR0L = (unsigned char)MYUBRR;
 /* Enable receiver and transmitter  and enables interupts*/
 UCSR0B = (1<<RXEN0)|(1<<TXEN0) | (1 << RXCIE0) | (1 << TXCIE0);
 /* Set frame format: 8 data, 1 stop bit */
@@ -17,7 +17,7 @@ UCSR0C = (0<<USBS0)|(3<<UCSZ00)|(0<<4)|(0<<5); // upm1/upm0
 }
 
 
-unsigned int USART_Receive( void )
+unsigned int USART_Receive(serialObj* self)
 {
 unsigned char status, resh, resl;
 /* Wait for data to be received */
@@ -34,10 +34,11 @@ if ( status & (1<<FE0)|(1<<DOR0)|(1<<UPE0) ){
 /* Filter the 9th bit, then return */
 resh = (resh >> 1) & 0x01;
 return ((resh << 8) | resl  ); 
+self->inData = UDR0;
 }
 
 
-void USART_Transmit( unsigned int data )
+void USART_Transmit(serialObj* self, unsigned int data )
 {
 /* Wait for empty transmit buffer */
 while ( !( UCSR0A & (1<<UDRE0))) ;
