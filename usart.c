@@ -1,40 +1,38 @@
 
 #include "usart.h"
 #include <avr/io.h>
+#include "lcd.h"
 
 
 
 void USART_Init(serialObj* self)
 {
 /* Set baud rate */
-UBRR0H = (unsigned char)(MYUBRR>>8);
-UBRR0L = (unsigned char)MYUBRR;
+//UBRR0H = (unsigned char)(MYUBRR>>8);
+UBRR0L = (unsigned char)(((8000000/16)/9600)-1);
+
+
+
 /* Enable receiver and transmitter  and enables interupts*/
-UCSR0B = (1<<RXEN0)|(1<<TXEN0) | (1 << RXCIE0) | (1 << TXCIE0);
-/* Set frame format: 8 data, 1 stop bit */
-UCSR0C = (0<<USBS0)|(3<<UCSZ00)|(0<<4)|(0<<5); // upm1/upm0
+UCSR0B |= (1<<RXEN0)|(1<<TXEN0);  // receiver and transmitter 
+UCSR0B |= (1 << RXCIE0);          //interupts
+//UCSR0B |= (1 << TXCIE0);          // transmit inter
+
+
+
+/* Set frame format:  */
+UCSR0C &= ~(1<<USBS0);   //   1 stop bit 
+UCSR0C |= (1<<UCSZ00); 
+UCSR0C |= (1<<UCSZ01); // 8 data,
 
 }
 
 
 unsigned int USART_Receive(serialObj* self)
 {
-unsigned char status, resh, resl;
-/* Wait for data to be received */
-//while ( !(UCSR0A & (1<<RXC0)) );
-/* Get status and 9th bit, then data */
-/* from buffer */
-status = UCSR0A;
-resh = UCSR0B;
-resl = UDR0;
-/* If error, return -1 */
-if ( status & (1<<FE0)|(1<<DOR0)|(1<<UPE0) ){
-    return -1;
-}
-/* Filter the 9th bit, then return */
-resh = (resh >> 1) & 0x01;
-return ((resh << 8) | resl  ); 
-self->inData = UDR0;
+	while(!(UCSR0A & (1<<RXC0)));
+	self->inData = UDR0;
+
 }
 
 
@@ -50,6 +48,33 @@ if ( data & 0x0100 ){
 /* Put data into buffer, sends the data */
 UDR0 = data;
 }
+
+
+void USART_Echo(){
+
+
+    if((UCSR0A & (1<<RXC0))>0){
+		unsigned char data = UDR0;
+		writeLong(data);
+		while ( !( UCSR0A & (1<<UDRE0))) ;
+		//UDR0 = 'A';
+		UDR0 = data;
+
+	}
+    
+
+
+	
+        
+    
+    
+	
+
+
+}
+
+
+
 
 
 

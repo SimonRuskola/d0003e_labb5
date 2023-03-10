@@ -116,3 +116,36 @@ void printAt(long num, int pos) {
     pp++;
     writeChar( num % 10 + '0', pp);
 }
+
+
+void writeLong(long i) {
+	int32_t iDigits;
+	if(i==0){iDigits=1;}
+
+	else{iDigits = floor(log10( i )) + 1;}
+
+	char Number[6];
+	
+	
+	for(int j=0; j<iDigits; j++){
+		 volatile int32_t i_copy = i;
+
+		for(int k=iDigits-j-1; k>0; k--){
+			i_copy = i_copy/10;
+
+		} i_copy= i_copy%10;
+
+
+		Number[j] = (char) (i_copy+48);
+		//printf("print %c \n",Number[j]);
+	}
+	
+
+	for(int j = 0; j<6; j++){
+		
+		writeChar(Number[j],j);
+		//printf("pos: %d",j);
+		//printf(" Value: %c \n",Number[j]);
+	}
+	
+}

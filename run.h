@@ -17,4 +17,3 @@ typedef struct{
 #define initRun(serial, lights) {initObject(), serial, lights}
 
 void run(runObj* self);
-void interupts(runObj* self);

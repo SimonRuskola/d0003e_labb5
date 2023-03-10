@@ -15,6 +15,8 @@
 #define EightValue  0x1f51 //0001010111110001 0x1 0xf 0x5 0x1 = 0x1f51
 #define NineValue   0x0b51 //0001010110110000 0x0 0xb 0x5 0x1 = 0x0b51 
 
+
+void writeLong(long i);
 void LCD_Init(void);
 void printAt(long num, int pos);
 void writeChar(char ch, int pos);

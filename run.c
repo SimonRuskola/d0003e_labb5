@@ -2,36 +2,14 @@
 #include "run.h"
 
 
-void sensorRead(runObj* self){
-    SYNC(self->serial, USART_Receive, NULL );
 
-	if(self->serial->inData & (1)){ // true if north car arrival
-        self->lights->carsNorth++;
-		    
-	}if(self->serial->inData & (1<<1)){ // true if north car bridge entry
-        self->lights->carsNorth--;
-        self->lights->carsOnBridge++;
-
-	}if(self->serial->inData & (1<<2)){ // true if south car arrival
-        self->lights->carsSouth++;
-
-	}if(self->serial->inData & (1<<3)){ // true if south car bridge entry
-        self->lights->carsSouth--;
-        self->lights->carsOnBridge++;
-
-	}
-
-	
-
-}
 
 void run(runObj* self){
     LCD_Init();
     USART_Init (self->serial);
 
-    INSTALL(self, sensorRead, IRQ_USART0_RX);
-
-    ASYNC(self->lights, lightUpdate, NULL);
+    //INSTALL(self->lights, sensorRead, IRQ_USART0_RX);
+    
 
     //INSTALL(self,interupts, IRQ_USART0_RX);
     //INSTALL(self,interupts, IRQ_USART0_UDRE);
