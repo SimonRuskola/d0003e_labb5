@@ -9,7 +9,7 @@ void USART_Init(serialObj* self)
 {
 /* Set baud rate */
 //UBRR0H = (unsigned char)(MYUBRR>>8);
-UBRR0L = (unsigned char)(((8000000/16)/9600)-1);
+UBRR0L = (unsigned char)(MYUBRR);
 
 
 
@@ -40,11 +40,6 @@ void USART_Transmit(serialObj* self, unsigned int data )
 {
 /* Wait for empty transmit buffer */
 while ( !( UCSR0A & (1<<UDRE0))) ;
-/* Copy 9th bit to TXB8 */
-UCSR0B &= ~(1<<TXB80);
-if ( data & 0x0100 ){
-    UCSR0B |= (1<<TXB80);
-}
 /* Put data into buffer, sends the data */
 UDR0 = data;
 }
@@ -62,14 +57,7 @@ void USART_Echo(){
 
 	}
     
-
-
-	
-        
     
-    
-	
-
 
 }
 

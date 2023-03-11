@@ -5,42 +5,65 @@
 #include "lcd.h"
 
 
-
+void carOffBridge(lightsObject* self){
+    self->carsOnBridge--;
+    ASYNC(self, updateLCD, NULL);
+}
 
 void openBridge(lightsObject* self){
-    if(self->direction == north){
-        self->direction == south;
-        ASYNC(self->serial, USART_Transmit, 0x6); // 0x6 = 0110 green south and red north on
-        if(self->carsSouth <= 0){
-            self->direction == north;
-            ASYNC(self->serial, USART_Transmit, 0x9) ;   // 0x9 = 1001 green north and red south on
-        }
-        
+    LCDDR3 = !LCDDR3;
+    self->carsRow = 0;
+    self->bridgeLock = 0; 
+    if(self->direction == north && (self->carsSouth >= 1 )){
+        self->direction = south;
+        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on 
+
+    }else if(self->direction == south && (self->carsNorth >= 1 )){
+        self->direction = north;
+        ASYNC(self->serial, USART_Transmit, 0x9);  // 0x9 = 1001 green north and red south on
     }else{
-        self->direction == north;
-        ASYNC(self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
-        if(self->carsNorth <= 0){
-            self->direction == north;
-            ASYNC(self->serial, USART_Transmit, 0x9)  ;  // 0x9 = 1001 green north and red south on
-        }
-    }   
+        self->direction = noDirection;
+
+    }
+
+   
+    //ASYNC(self,sensorRead, NULL);
 }
+
+
 
 void closeBridge(lightsObject* self){
-    ASYNC(self->serial, USART_Transmit, 0x5); // 0x5 = 0101 all red on and green off
+    self->bridgeLock = 1; 
+    ASYNC(self->serial, USART_Transmit, 0xA); // 0xA = 1010 all red on and green off
+    LCDDR18 =  !LCDDR18;
     AFTER(MSEC(5000),self, openBridge, NULL);
+    
 
 }
 
-void startCars(lightsObject* self){
-    if(self->direction == noDirection && self->carsNorth >= self->carsSouth){
-        self->direction = north;
-        ASYNC(self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
+int startCars(lightsObject* self){
 
-    } else{
-        self->direction = north;
-        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on
+    if(self->bridgeLock == 1 ){
+        return 0;
     }
+
+    if(self->direction == noDirection && self->carsNorth >= self->carsSouth ){ 
+        if(self->carsNorth >= 0){
+            self->direction = north;
+            ASYNC(self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
+        }
+        
+
+    } else if(self->direction == noDirection && self->carsSouth >= 0){
+        
+        self->direction = south;
+        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on  
+
+    }
+
+    return 1;
+
+    //self->direction = noDirection;
 
 }
 
@@ -50,31 +73,36 @@ void sensorRead(lightsObject* self){
 
 	if(self->serial->inData & (1)){ // north car arrival
         self->carsNorth++;
-        startCars(self);
+        //startCars(self);
+        ASYNC(self,startCars, NULL);
 
 
-    }if(self->serial->inData & (1<<1)){ //  north car bridge entry
-
-        if( !(self->carsNorth <= 0) ){ 
-            self->carsNorth--;
-            self->carsOnBridge++;
-            ASYNC(self->serial, USART_Transmit, 0x5) ;               // 0x5 = 0101 all red on and green off
+    }else if(self->serial->inData & (1<<1)  && (self->bridgeLock == 0) ){ //  north car bridge entry
+        self->carsNorth--;
+        self->carsOnBridge++;
+        self->carsRow++;
+        AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
+        if( !(self->carsNorth <= 0) && self->carsRow <=5){ 
+            ASYNC(self->serial, USART_Transmit, 0xA) ;               // 0xA = 1010 all red on and green off
             AFTER(MSEC(1000), self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
         }else{
             ASYNC(self, closeBridge, NULL); //switch direction
+            //closeBridge(self);
         }       
         
-	}if(self->serial->inData & (1<<2)){ //  south car arrival
+	}else if(self->serial->inData & (1<<2)){ //  south car arrival
         self->carsSouth++;
-        startCars(self);
+        //startCars(self);
+        ASYNC(self,startCars, NULL);
 
 
-	}if(self->serial->inData & (1<<3)){ // south car bridge entry
-        if( !(self->carsSouth <= 0) ){
-            self->carsSouth--;
-            self->carsOnBridge++;
-
-            ASYNC(self->serial, USART_Transmit, 0x5);                // 0x5 = 0101 all red on and green off
+	}else if(self->serial->inData & (1<<3)  && (self->bridgeLock == 0) ){ // south car bridge entry
+        self->carsSouth--;
+        self->carsOnBridge++;
+        self->carsRow++;
+        AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
+        if( !(self->carsSouth <= 0) && self->carsRow <=5){
+            ASYNC(self->serial, USART_Transmit, 0xA);                // 0xA = 1010 all red on and green off
             AFTER(MSEC(1000),self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on
 
         }else {

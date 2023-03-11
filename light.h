@@ -3,7 +3,7 @@
 #include "TinyTimber.h"
 #include "usart.h"
 
-#define initLightsObject(serial) {initObject(),serial,0,0,0,0,0,2,0}
+#define initLightsObject(serial) {initObject(),serial,0,0,0,0,0,2,0,0}
 
 #define north 1
 #define south 0
@@ -21,9 +21,12 @@ typedef struct {
     int northLight;
     int direction;
     int carsRow;
+    int bridgeLock;
 
 } lightsObject;
 
+
+startCars(lightsObject* self);
 void sensorRead(lightsObject* self);
 void carToBridge(lightsObject* self, int direction);
 void carOffBridge(lightsObject* self);

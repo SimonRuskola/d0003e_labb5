@@ -3,12 +3,19 @@
 
 
 
+void test(runObj* self){
+    printAt(23,0);
+}
+
 
 void run(runObj* self){
     LCD_Init();
     USART_Init (self->serial);
 
-    //INSTALL(self->lights, sensorRead, IRQ_USART0_RX);
+    INSTALL(self->lights, sensorRead, IRQ_USART0_RX);
+
+    //ASYNC(self, test, NULL);
+
     
 
     //INSTALL(self,interupts, IRQ_USART0_RX);
@@ -21,7 +28,7 @@ void run(runObj* self){
     //test = USART_Receive();
     //USART_Transmit(self->serial,0xA);
     //int i = 1;
-    while(1){
+    
 
         //pushToSerial(i);
         //i++;
@@ -30,7 +37,7 @@ void run(runObj* self){
         //printAt(test,0);
 
         //pushToSerial(0x1);
-    }
+    
 
 }
 
