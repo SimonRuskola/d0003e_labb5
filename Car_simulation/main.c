@@ -80,12 +80,6 @@ void *readKeyboard(void *vargp){
 		else if(keyboardInput == 'e'){
 			exit(1);
 		}
-		else if(keyboardInput == 'o'){
-			northQ--;
-		    carsOnBridge++;
-		    output = 0x02;
-		    write(com3File, &output , 1);
-		}
 		printf("write: %d\n",output);
 		
 	}
@@ -114,27 +108,43 @@ void *readCom3(void *vargp){
 		//if(com3Input & (1<<1)){ // true if north red is on
 		//   printf("read: north red on\n");}
 
+
+		if(com3Input & (1<<1)){  // true if north red is on
+			northboundRedLight = 1;
+		}else {
+			northboundRedLight = 0;
+		}
+
+		if(com3Input & (1<<3)){ // true if south red is on
+		   southboundRedLight = 1;
+		   printf("read: south red on\n");
+		}else{
+			southboundRedLight = 0;
+		}
+
+
 		if(com3Input & (1)){ // true if north green is on
+		    northboundGreenLight = 1;
 		    printf("read: north green on\n");
 			printf("read: south red on\n");
 		    direction = north;
 			pushCarToBridge();
-		//}else if(com3Input & (1<<3)){ // true if south red is on
-		//    printf("read: south red on\n");
 
-		}else if(com3Input & (1<<2)){ // true if south green is on
+		}else{
+			northboundGreenLight = 0;
+		}
+		
+		if(com3Input & (1<<2)){ // true if south green is on
+		    southboundGreenLight = 1;
 		    printf("read: south green on\n");
 			printf("read: north red on\n");
 		    direction = south;
 			pushCarToBridge();
 
+		}else{
+			southboundGreenLight = 0;
 		}
 
-		else if(com3Input & ((1<<3) | (1<<1)) ){ // true if south green is on
-		    printf("read: south red on\n");
-			printf("read: north red on\n");
-
-		}
 		update();
 
 	}

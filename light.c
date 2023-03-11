@@ -82,7 +82,7 @@ void sensorRead(lightsObject* self){
         self->carsOnBridge++;
         self->carsRow++;
         AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
-        if( !(self->carsNorth <= 0) && self->carsRow <=5){ 
+        if( !(self->carsNorth <= 0) && (self->carsRow <=5 | self->carsSouth <= 0)){ 
             ASYNC(self->serial, USART_Transmit, 0xA) ;               // 0xA = 1010 all red on and green off
             AFTER(MSEC(1000), self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
         }else{
@@ -101,7 +101,7 @@ void sensorRead(lightsObject* self){
         self->carsOnBridge++;
         self->carsRow++;
         AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
-        if( !(self->carsSouth <= 0) && self->carsRow <=5){
+        if( !(self->carsSouth <= 0) && (self->carsRow <=5  | self->carsNorth <= 0) ){
             ASYNC(self->serial, USART_Transmit, 0xA);                // 0xA = 1010 all red on and green off
             AFTER(MSEC(1000),self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on
 
