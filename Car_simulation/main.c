@@ -33,6 +33,8 @@ unsigned int output;
 
 pthread_mutex_t bridgeMutex;
 
+pthread_t carsOnBridge_th[6];
+
 
 unsigned int southQ;
 unsigned int northQ;
@@ -84,15 +86,23 @@ void *readKeyboard(void *vargp){
 		
 	}
 }
+void *pushCarOffBridge(void *vargp){
+	sleep(5);
+	carsOnBridge--;
+	update();
+
+}
 
 void pushCarToBridge(void){
 	if(direction == north){
 		northQ--;
+		pthread_create(&(carsOnBridge_th[carsOnBridge]), NULL, pushCarOffBridge, NULL);
 		carsOnBridge++;
 		output = 0x02;
 		write(com3File, &output , 1);
 	} else if(direction == south){
 		southQ--;
+		pthread_create(&(carsOnBridge_th[carsOnBridge]), NULL, pushCarOffBridge, NULL);
 		carsOnBridge++;
 		output = 0x08;
 		write(com3File, &output , 1);
