@@ -138,8 +138,6 @@ void carToBridge(lightsObject* self, int direction){
 
 }
 
-
-
 void carOffBridge(lightsObject* self){
     self->carsOnBridge--;
     if(self->carsOnBridge==0){
@@ -149,7 +147,6 @@ void carOffBridge(lightsObject* self){
     }
     updateLCD(self);
 }
-
 
 void switchLight(lightsObject* self){
     if(self->direction == north){
