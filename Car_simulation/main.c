@@ -1,8 +1,6 @@
 
 
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> 
@@ -82,7 +80,7 @@ void *readKeyboard(void *vargp){
 		else if(keyboardInput == 'e'){
 			exit(1);
 		}
-		printf("write: %d\n",output);
+		//printf("write: %d\n",output);
 		
 	}
 }
@@ -107,7 +105,7 @@ void pushCarToBridge(void){
 		output = 0x08;
 		write(com3File, &output , 1);
 	}
-	printf("write: %d\n",output);
+	//printf("write: %d\n",output);
 }
 
 void *readCom3(void *vargp){
@@ -127,7 +125,7 @@ void *readCom3(void *vargp){
 
 		if(com3Input & (1<<3)){ // true if south red is on
 		   southboundRedLight = 1;
-		   printf("read: south red on\n");
+		   
 		}else{
 			southboundRedLight = 0;
 		}
@@ -135,8 +133,6 @@ void *readCom3(void *vargp){
 
 		if(com3Input & (1)){ // true if north green is on
 		    northboundGreenLight = 1;
-		    printf("read: north green on\n");
-			printf("read: south red on\n");
 		    direction = north;
 			pushCarToBridge();
 
@@ -146,8 +142,6 @@ void *readCom3(void *vargp){
 		
 		if(com3Input & (1<<2)){ // true if south green is on
 		    southboundGreenLight = 1;
-		    printf("read: south green on\n");
-			printf("read: north red on\n");
 		    direction = south;
 			pushCarToBridge();
 
