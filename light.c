@@ -117,6 +117,11 @@ void sensorRead(lightsObject* self){
 
 
 
+void updateLCD(lightsObject* self){
+    printAt(self->carsNorth,0);
+    printAt(self->carsOnBridge,2);
+    printAt(self->carsSouth,4);
+}
 
 
 
@@ -194,9 +199,3 @@ void lightUpdate(lightsObject* self){
 }
 */
 
-
-void updateLCD(lightsObject* self){
-    printAt(self->carsNorth,0);
-    printAt(self->carsOnBridge,2);
-    printAt(self->carsSouth,4);
-}

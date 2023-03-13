@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  00000c78  00000000  00000000  00007f3c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000009b2  00000000  00000000  00008bb4  2**0
+ 10 .debug_str    000009e7  00000000  00000000  00008bb4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00002ba4  00000000  00000000  00009566  2**0
+ 11 .debug_loc    00002ba4  00000000  00000000  0000959b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000240  00000000  00000000  0000c10a  2**0
+ 12 .debug_ranges 00000240  00000000  00000000  0000c13f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -108,45 +108,22 @@ Disassembly of section .text:
       aa:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000ae <LCD_Init>:
-#include "lcd.h"
-
-
-
-void LCD_Init(void) {
-	CLKPR = (1 << CLKPCE); 
       ae:	e1 e6       	ldi	r30, 0x61	; 97
       b0:	f0 e0       	ldi	r31, 0x00	; 0
       b2:	80 e8       	ldi	r24, 0x80	; 128
       b4:	80 83       	st	Z, r24
-	CLKPR = 0x00;
       b6:	10 82       	st	Z, r1
-
-    // Use external asynchronous clock source 
-    // 1/3 Bias and 1/4 duty, 25 segments enabled 
-    LCDCRB = (1<<LCDCS) | (1<<LCDMUX1)| (1<<LCDMUX0)| (1<<LCDPM2) | (1<<LCDPM1) | (1<<LCDPM0);
       b8:	87 eb       	ldi	r24, 0xB7	; 183
       ba:	80 93 e5 00 	sts	0x00E5, r24	; 0x8000e5 <__TEXT_REGION_LENGTH__+0x7fc0e5>
-	// 
-    // Using 16 as prescaler selection and 8 as LCD Clock Divide 
-    LCDFRR = (1<<LCDCD2) | (1<<LCDCD1) | (1<<LCDCD0);
       be:	87 e0       	ldi	r24, 0x07	; 7
       c0:	80 93 e6 00 	sts	0x00E6, r24	; 0x8000e6 <__TEXT_REGION_LENGTH__+0x7fc0e6>
-    // Set segment drive time to 300 us and output voltage to 3.35 V
-    LCDCCR = (1<<LCDCC3) | (1<<LCDCC2) | (1<<LCDCC1)| (1<<LCDCC0);
       c4:	8f e0       	ldi	r24, 0x0F	; 15
       c6:	80 93 e7 00 	sts	0x00E7, r24	; 0x8000e7 <__TEXT_REGION_LENGTH__+0x7fc0e7>
-    // Enable LCD, low power waveform, no frame interrupt, no blanking 
-    LCDCRA = (1<<LCDEN) | (1<<LCDAB) |  (0<<LCDBL);
       ca:	80 ec       	ldi	r24, 0xC0	; 192
       cc:	80 93 e4 00 	sts	0x00E4, r24	; 0x8000e4 <__TEXT_REGION_LENGTH__+0x7fc0e4>
       d0:	08 95       	ret
 
 000000d2 <getValueArray>:
-}
-
-int getValueArray(int i){
-
-    switch (i)
       d2:	8a 30       	cpi	r24, 0x0A	; 10
       d4:	91 05       	cpc	r25, r1
       d6:	00 f5       	brcc	.+64     	; 0x118 <getValueArray+0x46>
@@ -154,89 +131,41 @@ int getValueArray(int i){
       da:	e2 5d       	subi	r30, 0xD2	; 210
       dc:	ff 4f       	sbci	r31, 0xFF	; 255
       de:	0c 94 35 12 	jmp	0x246a	; 0x246a <__tablejump2__>
-    {
-    case 0:
-        return ZeroValue;
-
-    case 1:
-        return OneValue;
       e2:	80 e8       	ldi	r24, 0x80	; 128
       e4:	90 e2       	ldi	r25, 0x20	; 32
       e6:	08 95       	ret
-    
-    case 2:
-        return TwoValue;
       e8:	81 e1       	ldi	r24, 0x11	; 17
       ea:	9e e1       	ldi	r25, 0x1E	; 30
       ec:	08 95       	ret
-
-    case 3:
-        return ThreeValue;
       ee:	81 e1       	ldi	r24, 0x11	; 17
       f0:	9b e1       	ldi	r25, 0x1B	; 27
       f2:	08 95       	ret
-    
-    case 4:
-        return FourValue;
       f4:	80 e5       	ldi	r24, 0x50	; 80
       f6:	9b e0       	ldi	r25, 0x0B	; 11
       f8:	08 95       	ret
-
-    case 5:
-        return FiveValue;
       fa:	81 e4       	ldi	r24, 0x41	; 65
       fc:	9b e1       	ldi	r25, 0x1B	; 27
       fe:	08 95       	ret
-    
-    case 6:
-        return SixValue;
      100:	81 e4       	ldi	r24, 0x41	; 65
      102:	9f e1       	ldi	r25, 0x1F	; 31
      104:	08 95       	ret
-    
-    case 7:
-        return SevenValue;
      106:	81 e1       	ldi	r24, 0x11	; 17
      108:	91 e0       	ldi	r25, 0x01	; 1
      10a:	08 95       	ret
-        
-    case 8:
-        return EightValue;
      10c:	81 e5       	ldi	r24, 0x51	; 81
      10e:	9f e1       	ldi	r25, 0x1F	; 31
      110:	08 95       	ret
-    
-    case 9:
-        return NineValue;
      112:	81 e5       	ldi	r24, 0x51	; 81
      114:	9b e0       	ldi	r25, 0x0B	; 11
      116:	08 95       	ret
-    
-    default: // 10
-        return BlankValue;
      118:	80 e0       	ldi	r24, 0x00	; 0
      11a:	90 e0       	ldi	r25, 0x00	; 0
      11c:	08 95       	ret
-int getValueArray(int i){
-
-    switch (i)
-    {
-    case 0:
-        return ZeroValue;
      11e:	81 e5       	ldi	r24, 0x51	; 81
      120:	95 e1       	ldi	r25, 0x15	; 21
-        return NineValue;
-    
-    default: // 10
-        return BlankValue;
-    }
-}
      122:	08 95       	ret
 
 00000124 <writeChar>:
-
-
-void writeChar(char ch, int pos) {
      124:	ef 92       	push	r14
      126:	ff 92       	push	r15
      128:	1f 93       	push	r17
@@ -245,41 +174,29 @@ void writeChar(char ch, int pos) {
      12e:	00 d0       	rcall	.+0      	; 0x130 <writeChar+0xc>
      130:	cd b7       	in	r28, 0x3d	; 61
      132:	de b7       	in	r29, 0x3e	; 62
-
-	volatile int i = 0;
      134:	1a 82       	std	Y+2, r1	; 0x02
      136:	19 82       	std	Y+1, r1	; 0x01
-	if (pos < 0 || pos > 5) {
      138:	66 30       	cpi	r22, 0x06	; 6
      13a:	71 05       	cpc	r23, r1
      13c:	08 f0       	brcs	.+2      	; 0x140 <writeChar+0x1c>
      13e:	fe c1       	rjmp	.+1020   	; 0x53c <__stack+0x3d>
-		return; // do nothing if pos is outside the supported range
-	}
-	if ((int)ch < (0+48) || (int)ch > (9+48)) {
      140:	90 ed       	ldi	r25, 0xD0	; 208
      142:	98 0f       	add	r25, r24
      144:	9a 30       	cpi	r25, 0x0A	; 10
      146:	28 f0       	brcs	.+10     	; 0x152 <writeChar+0x2e>
-		i=10;
      148:	8a e0       	ldi	r24, 0x0A	; 10
      14a:	90 e0       	ldi	r25, 0x00	; 0
      14c:	9a 83       	std	Y+2, r25	; 0x02
      14e:	89 83       	std	Y+1, r24	; 0x01
      150:	04 c0       	rjmp	.+8      	; 0x15a <writeChar+0x36>
-	}else{
-        i = ch - 48;
      152:	90 e0       	ldi	r25, 0x00	; 0
      154:	c0 97       	sbiw	r24, 0x30	; 48
      156:	9a 83       	std	Y+2, r25	; 0x02
      158:	89 83       	std	Y+1, r24	; 0x01
-    }
-	if(pos==0){
      15a:	61 15       	cp	r22, r1
      15c:	71 05       	cpc	r23, r1
      15e:	09 f0       	breq	.+2      	; 0x162 <writeChar+0x3e>
      160:	4e c0       	rjmp	.+156    	; 0x1fe <writeChar+0xda>
-		LCDDR0 =  (LCDDR0&0xF0)  |        (0xF&getValueArray(i))<<0;
      162:	0f 2e       	mov	r0, r31
      164:	fc ee       	ldi	r31, 0xEC	; 236
      166:	ef 2e       	mov	r14, r31
@@ -295,7 +212,6 @@ void writeChar(char ch, int pos) {
      17c:	81 2b       	or	r24, r17
      17e:	f7 01       	movw	r30, r14
      180:	80 83       	st	Z, r24
-		LCDDR5 =  (LCDDR5&0xF0)  |  (((0xF<<4)&getValueArray(i))>>4);
      182:	0f 2e       	mov	r0, r31
      184:	f1 ef       	ldi	r31, 0xF1	; 241
      186:	ef 2e       	mov	r14, r31
@@ -320,7 +236,6 @@ void writeChar(char ch, int pos) {
      1ae:	81 2b       	or	r24, r17
      1b0:	f7 01       	movw	r30, r14
      1b2:	80 83       	st	Z, r24
-		LCDDR10 = (LCDDR10&0xF0) |  (((0xF<<8)&getValueArray(i))>>8);
      1b4:	0f 2e       	mov	r0, r31
      1b6:	f6 ef       	ldi	r31, 0xF6	; 246
      1b8:	ef 2e       	mov	r14, r31
@@ -337,7 +252,6 @@ void writeChar(char ch, int pos) {
      1d0:	19 2b       	or	r17, r25
      1d2:	f7 01       	movw	r30, r14
      1d4:	10 83       	st	Z, r17
-		LCDDR15 = (LCDDR15&0xF0) | (((0xF<<12)&getValueArray(i))>>12);
      1d6:	0f 2e       	mov	r0, r31
      1d8:	fb ef       	ldi	r31, 0xFB	; 251
      1da:	ef 2e       	mov	r14, r31
@@ -357,13 +271,10 @@ void writeChar(char ch, int pos) {
      1f8:	f7 01       	movw	r30, r14
      1fa:	90 83       	st	Z, r25
      1fc:	9f c1       	rjmp	.+830    	; 0x53c <__stack+0x3d>
-		
-	} else if(pos==1){
      1fe:	61 30       	cpi	r22, 0x01	; 1
      200:	71 05       	cpc	r23, r1
      202:	09 f0       	breq	.+2      	; 0x206 <__EEPROM_REGION_LENGTH__+0x6>
      204:	50 c0       	rjmp	.+160    	; 0x2a6 <__EEPROM_REGION_LENGTH__+0xa6>
-		LCDDR0 =     (LCDDR0&0x0F)  |       ((0xF&getValueArray(i))<<4);
      206:	0f 2e       	mov	r0, r31
      208:	fc ee       	ldi	r31, 0xEC	; 236
      20a:	ef 2e       	mov	r14, r31
@@ -384,7 +295,6 @@ void writeChar(char ch, int pos) {
      22a:	81 2b       	or	r24, r17
      22c:	f7 01       	movw	r30, r14
      22e:	80 83       	st	Z, r24
-		LCDDR5 =     (LCDDR5&0x0F)  |  (((0xF<<4)&getValueArray(i))>>0);
      230:	0f 2e       	mov	r0, r31
      232:	f1 ef       	ldi	r31, 0xF1	; 241
      234:	ef 2e       	mov	r14, r31
@@ -400,7 +310,6 @@ void writeChar(char ch, int pos) {
      24a:	81 2b       	or	r24, r17
      24c:	f7 01       	movw	r30, r14
      24e:	80 83       	st	Z, r24
-		LCDDR10 =    (LCDDR10&0x0F) |  (((0xF<<8)&getValueArray(i))>>4);
      250:	0f 2e       	mov	r0, r31
      252:	f6 ef       	ldi	r31, 0xF6	; 246
      254:	ef 2e       	mov	r14, r31
@@ -425,7 +334,6 @@ void writeChar(char ch, int pos) {
      27c:	81 2b       	or	r24, r17
      27e:	f7 01       	movw	r30, r14
      280:	80 83       	st	Z, r24
-		LCDDR15 =    (LCDDR15&0x0F) | (((0xF<<12)&getValueArray(i))>>8);
      282:	0f 2e       	mov	r0, r31
      284:	fb ef       	ldi	r31, 0xFB	; 251
      286:	ef 2e       	mov	r14, r31
@@ -443,12 +351,10 @@ void writeChar(char ch, int pos) {
      2a0:	f7 01       	movw	r30, r14
      2a2:	10 83       	st	Z, r17
      2a4:	4b c1       	rjmp	.+662    	; 0x53c <__stack+0x3d>
-	} else if(pos==2){
      2a6:	62 30       	cpi	r22, 0x02	; 2
      2a8:	71 05       	cpc	r23, r1
      2aa:	09 f0       	breq	.+2      	; 0x2ae <__EEPROM_REGION_LENGTH__+0xae>
      2ac:	4e c0       	rjmp	.+156    	; 0x34a <__EEPROM_REGION_LENGTH__+0x14a>
-		LCDDR1 =  (LCDDR1&0xF0)  |        (0xF&getValueArray(i))<<0;
      2ae:	0f 2e       	mov	r0, r31
      2b0:	fd ee       	ldi	r31, 0xED	; 237
      2b2:	ef 2e       	mov	r14, r31
@@ -464,7 +370,6 @@ void writeChar(char ch, int pos) {
      2c8:	81 2b       	or	r24, r17
      2ca:	f7 01       	movw	r30, r14
      2cc:	80 83       	st	Z, r24
-		LCDDR6 =  (LCDDR6&0xF0)  |  (((0xF<<4)&getValueArray(i))>>4);
      2ce:	0f 2e       	mov	r0, r31
      2d0:	f2 ef       	ldi	r31, 0xF2	; 242
      2d2:	ef 2e       	mov	r14, r31
@@ -489,7 +394,6 @@ void writeChar(char ch, int pos) {
      2fa:	81 2b       	or	r24, r17
      2fc:	f7 01       	movw	r30, r14
      2fe:	80 83       	st	Z, r24
-		LCDDR11 = (LCDDR11&0xF0) |  (((0xF<<8)&getValueArray(i))>>8);
      300:	0f 2e       	mov	r0, r31
      302:	f7 ef       	ldi	r31, 0xF7	; 247
      304:	ef 2e       	mov	r14, r31
@@ -506,7 +410,6 @@ void writeChar(char ch, int pos) {
      31c:	19 2b       	or	r17, r25
      31e:	f7 01       	movw	r30, r14
      320:	10 83       	st	Z, r17
-		LCDDR16 = (LCDDR16&0xF0) | (((0xF<<12)&getValueArray(i))>>12);
      322:	0f 2e       	mov	r0, r31
      324:	fc ef       	ldi	r31, 0xFC	; 252
      326:	ef 2e       	mov	r14, r31
@@ -526,13 +429,10 @@ void writeChar(char ch, int pos) {
      344:	f7 01       	movw	r30, r14
      346:	90 83       	st	Z, r25
      348:	f9 c0       	rjmp	.+498    	; 0x53c <__stack+0x3d>
-		
-	} else if(pos==3){
      34a:	63 30       	cpi	r22, 0x03	; 3
      34c:	71 05       	cpc	r23, r1
      34e:	09 f0       	breq	.+2      	; 0x352 <__EEPROM_REGION_LENGTH__+0x152>
      350:	50 c0       	rjmp	.+160    	; 0x3f2 <__EEPROM_REGION_LENGTH__+0x1f2>
-		LCDDR1 =     (LCDDR1&0x0F)  |       ((0xF&getValueArray(i))<<4);
      352:	0f 2e       	mov	r0, r31
      354:	fd ee       	ldi	r31, 0xED	; 237
      356:	ef 2e       	mov	r14, r31
@@ -553,7 +453,6 @@ void writeChar(char ch, int pos) {
      376:	81 2b       	or	r24, r17
      378:	f7 01       	movw	r30, r14
      37a:	80 83       	st	Z, r24
-		LCDDR6 =     (LCDDR6&0x0F)  |  (((0xF<<4)&getValueArray(i))>>0);
      37c:	0f 2e       	mov	r0, r31
      37e:	f2 ef       	ldi	r31, 0xF2	; 242
      380:	ef 2e       	mov	r14, r31
@@ -569,7 +468,6 @@ void writeChar(char ch, int pos) {
      396:	81 2b       	or	r24, r17
      398:	f7 01       	movw	r30, r14
      39a:	80 83       	st	Z, r24
-		LCDDR11 =    (LCDDR11&0x0F) |  (((0xF<<8)&getValueArray(i))>>4);
      39c:	0f 2e       	mov	r0, r31
      39e:	f7 ef       	ldi	r31, 0xF7	; 247
      3a0:	ef 2e       	mov	r14, r31
@@ -594,7 +492,6 @@ void writeChar(char ch, int pos) {
      3c8:	81 2b       	or	r24, r17
      3ca:	f7 01       	movw	r30, r14
      3cc:	80 83       	st	Z, r24
-		LCDDR16 =    (LCDDR16&0x0F) | (((0xF<<12)&getValueArray(i))>>8);
      3ce:	0f 2e       	mov	r0, r31
      3d0:	fc ef       	ldi	r31, 0xFC	; 252
      3d2:	ef 2e       	mov	r14, r31
@@ -612,13 +509,10 @@ void writeChar(char ch, int pos) {
      3ec:	f7 01       	movw	r30, r14
      3ee:	10 83       	st	Z, r17
      3f0:	a5 c0       	rjmp	.+330    	; 0x53c <__stack+0x3d>
-		
-	} else if(pos==4){
      3f2:	64 30       	cpi	r22, 0x04	; 4
      3f4:	71 05       	cpc	r23, r1
      3f6:	09 f0       	breq	.+2      	; 0x3fa <__EEPROM_REGION_LENGTH__+0x1fa>
      3f8:	4e c0       	rjmp	.+156    	; 0x496 <__DATA_REGION_LENGTH__+0x96>
-		LCDDR2 =  (LCDDR2&0xF0)  |        (0xF&getValueArray(i))<<0;
      3fa:	0f 2e       	mov	r0, r31
      3fc:	fe ee       	ldi	r31, 0xEE	; 238
      3fe:	ef 2e       	mov	r14, r31
@@ -634,7 +528,6 @@ void writeChar(char ch, int pos) {
      414:	81 2b       	or	r24, r17
      416:	f7 01       	movw	r30, r14
      418:	80 83       	st	Z, r24
-		LCDDR7 =  (LCDDR7&0xF0)  |  (((0xF<<4)&getValueArray(i))>>4);
      41a:	0f 2e       	mov	r0, r31
      41c:	f3 ef       	ldi	r31, 0xF3	; 243
      41e:	ef 2e       	mov	r14, r31
@@ -659,7 +552,6 @@ void writeChar(char ch, int pos) {
      446:	81 2b       	or	r24, r17
      448:	f7 01       	movw	r30, r14
      44a:	80 83       	st	Z, r24
-		LCDDR12 = (LCDDR12&0xF0) |  (((0xF<<8)&getValueArray(i))>>8);
      44c:	0f 2e       	mov	r0, r31
      44e:	f8 ef       	ldi	r31, 0xF8	; 248
      450:	ef 2e       	mov	r14, r31
@@ -676,7 +568,6 @@ void writeChar(char ch, int pos) {
      468:	19 2b       	or	r17, r25
      46a:	f7 01       	movw	r30, r14
      46c:	10 83       	st	Z, r17
-		LCDDR17 = (LCDDR17&0xF0) | (((0xF<<12)&getValueArray(i))>>12);
      46e:	0f 2e       	mov	r0, r31
      470:	fd ef       	ldi	r31, 0xFD	; 253
      472:	ef 2e       	mov	r14, r31
@@ -696,13 +587,10 @@ void writeChar(char ch, int pos) {
      490:	f7 01       	movw	r30, r14
      492:	90 83       	st	Z, r25
      494:	53 c0       	rjmp	.+166    	; 0x53c <__stack+0x3d>
-		
-	} else if(pos==5){
      496:	65 30       	cpi	r22, 0x05	; 5
      498:	71 05       	cpc	r23, r1
      49a:	09 f0       	breq	.+2      	; 0x49e <__DATA_REGION_LENGTH__+0x9e>
      49c:	4f c0       	rjmp	.+158    	; 0x53c <__stack+0x3d>
-		LCDDR2 =     (LCDDR2&0x0F)  |       ((0xF&getValueArray(i))<<4);
      49e:	0f 2e       	mov	r0, r31
      4a0:	fe ee       	ldi	r31, 0xEE	; 238
      4a2:	ef 2e       	mov	r14, r31
@@ -723,7 +611,6 @@ void writeChar(char ch, int pos) {
      4c2:	81 2b       	or	r24, r17
      4c4:	f7 01       	movw	r30, r14
      4c6:	80 83       	st	Z, r24
-		LCDDR7 =     (LCDDR7&0x0F)  |  (((0xF<<4)&getValueArray(i))>>0);
      4c8:	0f 2e       	mov	r0, r31
      4ca:	f3 ef       	ldi	r31, 0xF3	; 243
      4cc:	ef 2e       	mov	r14, r31
@@ -739,7 +626,6 @@ void writeChar(char ch, int pos) {
      4e2:	81 2b       	or	r24, r17
      4e4:	f7 01       	movw	r30, r14
      4e6:	80 83       	st	Z, r24
-		LCDDR12 =    (LCDDR12&0x0F) |  (((0xF<<8)&getValueArray(i))>>4);
      4e8:	0f 2e       	mov	r0, r31
      4ea:	f8 ef       	ldi	r31, 0xF8	; 248
      4ec:	ef 2e       	mov	r14, r31
@@ -764,7 +650,6 @@ void writeChar(char ch, int pos) {
      514:	81 2b       	or	r24, r17
      516:	f7 01       	movw	r30, r14
      518:	80 83       	st	Z, r24
-		LCDDR17 =    (LCDDR17&0x0F) | (((0xF<<12)&getValueArray(i))>>8);
      51a:	0f 2e       	mov	r0, r31
      51c:	fd ef       	ldi	r31, 0xFD	; 253
      51e:	ef 2e       	mov	r14, r31
@@ -781,11 +666,6 @@ void writeChar(char ch, int pos) {
      536:	19 2b       	or	r17, r25
      538:	f7 01       	movw	r30, r14
      53a:	10 83       	st	Z, r17
-		
-	}
-	
-
-}
      53c:	0f 90       	pop	r0
      53e:	0f 90       	pop	r0
      540:	df 91       	pop	r29
@@ -796,8 +676,6 @@ void writeChar(char ch, int pos) {
      54a:	08 95       	ret
 
 0000054c <printAt>:
-
-void printAt(long num, int pos) {
      54c:	8f 92       	push	r8
      54e:	9f 92       	push	r9
      550:	af 92       	push	r10
@@ -811,8 +689,6 @@ void printAt(long num, int pos) {
      560:	4b 01       	movw	r8, r22
      562:	5c 01       	movw	r10, r24
      564:	ea 01       	movw	r28, r20
-    int pp = pos;
-    writeChar( (num % 100) / 10 + '0', pp);
      566:	24 e6       	ldi	r18, 0x64	; 100
      568:	30 e0       	ldi	r19, 0x00	; 0
      56a:	40 e0       	ldi	r20, 0x00	; 0
@@ -832,8 +708,6 @@ void printAt(long num, int pos) {
      58a:	80 e3       	ldi	r24, 0x30	; 48
      58c:	82 0f       	add	r24, r18
      58e:	0e 94 92 00 	call	0x124	; 0x124 <writeChar>
-    pp++;
-    writeChar( num % 10 + '0', pp);
      592:	21 96       	adiw	r28, 0x01	; 1
      594:	c5 01       	movw	r24, r10
      596:	b4 01       	movw	r22, r8
@@ -844,7 +718,6 @@ void printAt(long num, int pos) {
      5a2:	be 01       	movw	r22, r28
      5a4:	80 5d       	subi	r24, 0xD0	; 208
      5a6:	0e 94 92 00 	call	0x124	; 0x124 <writeChar>
-}
      5aa:	df 91       	pop	r29
      5ac:	cf 91       	pop	r28
      5ae:	ff 90       	pop	r15
@@ -858,19 +731,12 @@ void printAt(long num, int pos) {
      5be:	08 95       	ret
 
 000005c0 <carOffBridge>:
-#include "light.h"
-#include "TinyTimber.h"
-#include "lcd.h"
-
-
-void carOffBridge(lightsObject* self){
      5c0:	cf 92       	push	r12
      5c2:	df 92       	push	r13
      5c4:	ef 92       	push	r14
      5c6:	ff 92       	push	r15
      5c8:	0f 93       	push	r16
      5ca:	1f 93       	push	r17
-    self->carsOnBridge--;
      5cc:	fc 01       	movw	r30, r24
      5ce:	26 81       	ldd	r18, Z+6	; 0x06
      5d0:	37 81       	ldd	r19, Z+7	; 0x07
@@ -878,7 +744,6 @@ void carOffBridge(lightsObject* self){
      5d4:	31 09       	sbc	r19, r1
      5d6:	37 83       	std	Z+7, r19	; 0x07
      5d8:	26 83       	std	Z+6, r18	; 0x06
-    ASYNC(self, updateLCD, NULL);
      5da:	c1 2c       	mov	r12, r1
      5dc:	d1 2c       	mov	r13, r1
      5de:	0f 2e       	mov	r0, r31
@@ -895,7 +760,6 @@ void carOffBridge(lightsObject* self){
      5f4:	70 e0       	ldi	r23, 0x00	; 0
      5f6:	cb 01       	movw	r24, r22
      5f8:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-}
      5fc:	1f 91       	pop	r17
      5fe:	0f 91       	pop	r16
      600:	ff 90       	pop	r15
@@ -905,8 +769,6 @@ void carOffBridge(lightsObject* self){
      608:	08 95       	ret
 
 0000060a <openBridge>:
-
-void openBridge(lightsObject* self){
      60a:	cf 92       	push	r12
      60c:	df 92       	push	r13
      60e:	ef 92       	push	r14
@@ -914,19 +776,15 @@ void openBridge(lightsObject* self){
      612:	0f 93       	push	r16
      614:	1f 93       	push	r17
      616:	fc 01       	movw	r30, r24
-    LCDDR3 = !LCDDR3;
      618:	90 91 ef 00 	lds	r25, 0x00EF	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7fc0ef>
      61c:	81 e0       	ldi	r24, 0x01	; 1
      61e:	91 11       	cpse	r25, r1
      620:	80 e0       	ldi	r24, 0x00	; 0
      622:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7fc0ef>
-    self->carsRow = 0;
      626:	13 8a       	std	Z+19, r1	; 0x13
      628:	12 8a       	std	Z+18, r1	; 0x12
-    self->bridgeLock = 0; 
      62a:	15 8a       	std	Z+21, r1	; 0x15
      62c:	14 8a       	std	Z+20, r1	; 0x14
-    if(self->direction == north && (self->carsSouth >= 1 )){
      62e:	80 89       	ldd	r24, Z+16	; 0x10
      630:	91 89       	ldd	r25, Z+17	; 0x11
      632:	81 30       	cpi	r24, 0x01	; 1
@@ -937,10 +795,8 @@ void openBridge(lightsObject* self){
      63c:	18 16       	cp	r1, r24
      63e:	19 06       	cpc	r1, r25
      640:	cc f5       	brge	.+114    	; 0x6b4 <openBridge+0xaa>
-        self->direction = south;
      642:	11 8a       	std	Z+17, r1	; 0x11
      644:	10 8a       	std	Z+16, r1	; 0x10
-        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on 
      646:	04 81       	ldd	r16, Z+4	; 0x04
      648:	15 81       	ldd	r17, Z+5	; 0x05
      64a:	0f 2e       	mov	r0, r31
@@ -962,8 +818,6 @@ void openBridge(lightsObject* self){
      66a:	cb 01       	movw	r24, r22
      66c:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      670:	25 c0       	rjmp	.+74     	; 0x6bc <openBridge+0xb2>
-
-    }else if(self->direction == south && (self->carsNorth >= 1 )){
      672:	89 2b       	or	r24, r25
      674:	f9 f4       	brne	.+62     	; 0x6b4 <openBridge+0xaa>
      676:	80 85       	ldd	r24, Z+8	; 0x08
@@ -971,12 +825,10 @@ void openBridge(lightsObject* self){
      67a:	18 16       	cp	r1, r24
      67c:	19 06       	cpc	r1, r25
      67e:	d4 f4       	brge	.+52     	; 0x6b4 <openBridge+0xaa>
-        self->direction = north;
      680:	81 e0       	ldi	r24, 0x01	; 1
      682:	90 e0       	ldi	r25, 0x00	; 0
      684:	91 8b       	std	Z+17, r25	; 0x11
      686:	80 8b       	std	Z+16, r24	; 0x10
-        ASYNC(self->serial, USART_Transmit, 0x9);  // 0x9 = 1001 green north and red south on
      688:	04 81       	ldd	r16, Z+4	; 0x04
      68a:	15 81       	ldd	r17, Z+5	; 0x05
      68c:	0f 2e       	mov	r0, r31
@@ -998,18 +850,10 @@ void openBridge(lightsObject* self){
      6ac:	cb 01       	movw	r24, r22
      6ae:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      6b2:	04 c0       	rjmp	.+8      	; 0x6bc <openBridge+0xb2>
-    }else{
-        self->direction = noDirection;
      6b4:	82 e0       	ldi	r24, 0x02	; 2
      6b6:	90 e0       	ldi	r25, 0x00	; 0
      6b8:	91 8b       	std	Z+17, r25	; 0x11
      6ba:	80 8b       	std	Z+16, r24	; 0x10
-
-    }
-
-   
-    //ASYNC(self,sensorRead, NULL);
-}
      6bc:	1f 91       	pop	r17
      6be:	0f 91       	pop	r16
      6c0:	ff 90       	pop	r15
@@ -1019,10 +863,6 @@ void openBridge(lightsObject* self){
      6c8:	08 95       	ret
 
 000006ca <closeBridge>:
-
-
-
-void closeBridge(lightsObject* self){
      6ca:	cf 92       	push	r12
      6cc:	df 92       	push	r13
      6ce:	ef 92       	push	r14
@@ -1032,12 +872,10 @@ void closeBridge(lightsObject* self){
      6d6:	cf 93       	push	r28
      6d8:	df 93       	push	r29
      6da:	ec 01       	movw	r28, r24
-    self->bridgeLock = 1; 
      6dc:	81 e0       	ldi	r24, 0x01	; 1
      6de:	90 e0       	ldi	r25, 0x00	; 0
      6e0:	9d 8b       	std	Y+21, r25	; 0x15
      6e2:	8c 8b       	std	Y+20, r24	; 0x14
-    ASYNC(self->serial, USART_Transmit, 0xA); // 0xA = 1010 all red on and green off
      6e4:	0c 81       	ldd	r16, Y+4	; 0x04
      6e6:	1d 81       	ldd	r17, Y+5	; 0x05
      6e8:	0f 2e       	mov	r0, r31
@@ -1058,13 +896,11 @@ void closeBridge(lightsObject* self){
      706:	70 e0       	ldi	r23, 0x00	; 0
      708:	cb 01       	movw	r24, r22
      70a:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-    LCDDR18 =  !LCDDR18;
      70e:	90 91 fe 00 	lds	r25, 0x00FE	; 0x8000fe <__TEXT_REGION_LENGTH__+0x7fc0fe>
      712:	81 e0       	ldi	r24, 0x01	; 1
      714:	91 11       	cpse	r25, r1
      716:	80 e0       	ldi	r24, 0x00	; 0
      718:	80 93 fe 00 	sts	0x00FE, r24	; 0x8000fe <__TEXT_REGION_LENGTH__+0x7fc0fe>
-    AFTER(MSEC(5000),self, openBridge, NULL);
      71c:	c1 2c       	mov	r12, r1
      71e:	d1 2c       	mov	r13, r1
      720:	0f 2e       	mov	r0, r31
@@ -1082,9 +918,6 @@ void closeBridge(lightsObject* self){
      738:	82 e0       	ldi	r24, 0x02	; 2
      73a:	90 e0       	ldi	r25, 0x00	; 0
      73c:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-    
-
-}
      740:	df 91       	pop	r29
      742:	cf 91       	pop	r28
      744:	1f 91       	pop	r17
@@ -1096,16 +929,12 @@ void closeBridge(lightsObject* self){
      750:	08 95       	ret
 
 00000752 <startCars>:
-
-int startCars(lightsObject* self){
      752:	cf 92       	push	r12
      754:	df 92       	push	r13
      756:	ef 92       	push	r14
      758:	ff 92       	push	r15
      75a:	0f 93       	push	r16
      75c:	1f 93       	push	r17
-
-    if(self->bridgeLock == 1 ){
      75e:	fc 01       	movw	r30, r24
      760:	24 89       	ldd	r18, Z+20	; 0x14
      762:	35 89       	ldd	r19, Z+21	; 0x15
@@ -1113,10 +942,6 @@ int startCars(lightsObject* self){
      766:	31 05       	cpc	r19, r1
      768:	09 f4       	brne	.+2      	; 0x76c <startCars+0x1a>
      76a:	47 c0       	rjmp	.+142    	; 0x7fa <startCars+0xa8>
-        return 0;
-    }
-
-    if(self->direction == noDirection && self->carsNorth >= self->carsSouth ){ 
      76c:	20 89       	ldd	r18, Z+16	; 0x10
      76e:	31 89       	ldd	r19, Z+17	; 0x11
      770:	22 30       	cpi	r18, 0x02	; 2
@@ -1130,15 +955,12 @@ int startCars(lightsObject* self){
      780:	28 17       	cp	r18, r24
      782:	39 07       	cpc	r19, r25
      784:	f4 f0       	brlt	.+60     	; 0x7c2 <startCars+0x70>
-        if(self->carsNorth >= 0){
      786:	33 23       	and	r19, r19
      788:	f4 f1       	brlt	.+124    	; 0x806 <startCars+0xb4>
-            self->direction = north;
      78a:	81 e0       	ldi	r24, 0x01	; 1
      78c:	90 e0       	ldi	r25, 0x00	; 0
      78e:	91 8b       	std	Z+17, r25	; 0x11
      790:	80 8b       	std	Z+16, r24	; 0x10
-            ASYNC(self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
      792:	04 81       	ldd	r16, Z+4	; 0x04
      794:	15 81       	ldd	r17, Z+5	; 0x05
      796:	0f 2e       	mov	r0, r31
@@ -1159,28 +981,13 @@ int startCars(lightsObject* self){
      7b4:	70 e0       	ldi	r23, 0x00	; 0
      7b6:	cb 01       	movw	r24, r22
      7b8:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-        self->direction = south;
-        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on  
-
-    }
-
-    return 1;
      7bc:	81 e0       	ldi	r24, 0x01	; 1
      7be:	90 e0       	ldi	r25, 0x00	; 0
      7c0:	27 c0       	rjmp	.+78     	; 0x810 <startCars+0xbe>
-            self->direction = north;
-            ASYNC(self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
-        }
-        
-
-    } else if(self->direction == noDirection && self->carsSouth >= 0){
      7c2:	99 23       	and	r25, r25
      7c4:	1c f1       	brlt	.+70     	; 0x80c <startCars+0xba>
-        
-        self->direction = south;
      7c6:	11 8a       	std	Z+17, r1	; 0x11
      7c8:	10 8a       	std	Z+16, r1	; 0x10
-        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on  
      7ca:	04 81       	ldd	r16, Z+4	; 0x04
      7cc:	15 81       	ldd	r17, Z+5	; 0x05
      7ce:	0f 2e       	mov	r0, r31
@@ -1201,28 +1008,12 @@ int startCars(lightsObject* self){
      7ec:	70 e0       	ldi	r23, 0x00	; 0
      7ee:	cb 01       	movw	r24, r22
      7f0:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-
-    }
-
-    return 1;
      7f4:	81 e0       	ldi	r24, 0x01	; 1
      7f6:	90 e0       	ldi	r25, 0x00	; 0
      7f8:	0b c0       	rjmp	.+22     	; 0x810 <startCars+0xbe>
-}
-
-int startCars(lightsObject* self){
-
-    if(self->bridgeLock == 1 ){
-        return 0;
      7fa:	80 e0       	ldi	r24, 0x00	; 0
      7fc:	90 e0       	ldi	r25, 0x00	; 0
      7fe:	08 c0       	rjmp	.+16     	; 0x810 <startCars+0xbe>
-        self->direction = south;
-        ASYNC(self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on  
-
-    }
-
-    return 1;
      800:	81 e0       	ldi	r24, 0x01	; 1
      802:	90 e0       	ldi	r25, 0x00	; 0
      804:	05 c0       	rjmp	.+10     	; 0x810 <startCars+0xbe>
@@ -1231,10 +1022,6 @@ int startCars(lightsObject* self){
      80a:	02 c0       	rjmp	.+4      	; 0x810 <startCars+0xbe>
      80c:	81 e0       	ldi	r24, 0x01	; 1
      80e:	90 e0       	ldi	r25, 0x00	; 0
-
-    //self->direction = noDirection;
-
-}
      810:	1f 91       	pop	r17
      812:	0f 91       	pop	r16
      814:	ff 90       	pop	r15
@@ -1244,16 +1031,9 @@ int startCars(lightsObject* self){
      81c:	08 95       	ret
 
 0000081e <updateLCD>:
-    
-}
-*/
-
-
-void updateLCD(lightsObject* self){
      81e:	cf 93       	push	r28
      820:	df 93       	push	r29
      822:	ec 01       	movw	r28, r24
-    printAt(self->carsNorth,0);
      824:	68 85       	ldd	r22, Y+8	; 0x08
      826:	79 85       	ldd	r23, Y+9	; 0x09
      828:	07 2e       	mov	r0, r23
@@ -1263,7 +1043,6 @@ void updateLCD(lightsObject* self){
      830:	40 e0       	ldi	r20, 0x00	; 0
      832:	50 e0       	ldi	r21, 0x00	; 0
      834:	0e 94 a6 02 	call	0x54c	; 0x54c <printAt>
-    printAt(self->carsOnBridge,2);
      838:	6e 81       	ldd	r22, Y+6	; 0x06
      83a:	7f 81       	ldd	r23, Y+7	; 0x07
      83c:	07 2e       	mov	r0, r23
@@ -1273,7 +1052,6 @@ void updateLCD(lightsObject* self){
      844:	42 e0       	ldi	r20, 0x02	; 2
      846:	50 e0       	ldi	r21, 0x00	; 0
      848:	0e 94 a6 02 	call	0x54c	; 0x54c <printAt>
-    printAt(self->carsSouth,4);
      84c:	6a 85       	ldd	r22, Y+10	; 0x0a
      84e:	7b 85       	ldd	r23, Y+11	; 0x0b
      850:	07 2e       	mov	r0, r23
@@ -1288,12 +1066,6 @@ void updateLCD(lightsObject* self){
      864:	08 95       	ret
 
 00000866 <sensorRead>:
-    //self->direction = noDirection;
-
-}
-
-
-void sensorRead(lightsObject* self){
      866:	cf 92       	push	r12
      868:	df 92       	push	r13
      86a:	ef 92       	push	r14
@@ -1303,7 +1075,6 @@ void sensorRead(lightsObject* self){
      872:	cf 93       	push	r28
      874:	df 93       	push	r29
      876:	ec 01       	movw	r28, r24
-    SYNC(self->serial, USART_Receive, NULL );
      878:	40 e0       	ldi	r20, 0x00	; 0
      87a:	50 e0       	ldi	r21, 0x00	; 0
      87c:	60 e0       	ldi	r22, 0x00	; 0
@@ -1311,21 +1082,16 @@ void sensorRead(lightsObject* self){
      880:	8c 81       	ldd	r24, Y+4	; 0x04
      882:	9d 81       	ldd	r25, Y+5	; 0x05
      884:	0e 94 b8 10 	call	0x2170	; 0x2170 <sync>
-
-	if(self->serial->inData & (1)){ // north car arrival
      888:	ec 81       	ldd	r30, Y+4	; 0x04
      88a:	fd 81       	ldd	r31, Y+5	; 0x05
      88c:	84 81       	ldd	r24, Z+4	; 0x04
      88e:	80 ff       	sbrs	r24, 0
      890:	17 c0       	rjmp	.+46     	; 0x8c0 <sensorRead+0x5a>
-        self->carsNorth++;
      892:	88 85       	ldd	r24, Y+8	; 0x08
      894:	99 85       	ldd	r25, Y+9	; 0x09
      896:	01 96       	adiw	r24, 0x01	; 1
      898:	99 87       	std	Y+9, r25	; 0x09
      89a:	88 87       	std	Y+8, r24	; 0x08
-        //startCars(self);
-        ASYNC(self,startCars, NULL);
      89c:	c1 2c       	mov	r12, r1
      89e:	d1 2c       	mov	r13, r1
      8a0:	0f 2e       	mov	r0, r31
@@ -1343,9 +1109,6 @@ void sensorRead(lightsObject* self){
      8b8:	cb 01       	movw	r24, r22
      8ba:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      8be:	06 c1       	rjmp	.+524    	; 0xacc <sensorRead+0x266>
-
-
-    }else if(self->serial->inData & (1<<1)  && (self->bridgeLock == 0) ){ //  north car bridge entry
      8c0:	81 ff       	sbrs	r24, 1
      8c2:	75 c0       	rjmp	.+234    	; 0x9ae <sensorRead+0x148>
      8c4:	2c 89       	ldd	r18, Y+20	; 0x14
@@ -1353,25 +1116,21 @@ void sensorRead(lightsObject* self){
      8c8:	23 2b       	or	r18, r19
      8ca:	09 f0       	breq	.+2      	; 0x8ce <sensorRead+0x68>
      8cc:	70 c0       	rjmp	.+224    	; 0x9ae <sensorRead+0x148>
-        self->carsNorth--;
      8ce:	88 85       	ldd	r24, Y+8	; 0x08
      8d0:	99 85       	ldd	r25, Y+9	; 0x09
      8d2:	01 97       	sbiw	r24, 0x01	; 1
      8d4:	99 87       	std	Y+9, r25	; 0x09
      8d6:	88 87       	std	Y+8, r24	; 0x08
-        self->carsOnBridge++;
      8d8:	8e 81       	ldd	r24, Y+6	; 0x06
      8da:	9f 81       	ldd	r25, Y+7	; 0x07
      8dc:	01 96       	adiw	r24, 0x01	; 1
      8de:	9f 83       	std	Y+7, r25	; 0x07
      8e0:	8e 83       	std	Y+6, r24	; 0x06
-        self->carsRow++;
      8e2:	8a 89       	ldd	r24, Y+18	; 0x12
      8e4:	9b 89       	ldd	r25, Y+19	; 0x13
      8e6:	01 96       	adiw	r24, 0x01	; 1
      8e8:	9b 8b       	std	Y+19, r25	; 0x13
      8ea:	8a 8b       	std	Y+18, r24	; 0x12
-        AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
      8ec:	c1 2c       	mov	r12, r1
      8ee:	d1 2c       	mov	r13, r1
      8f0:	0f 2e       	mov	r0, r31
@@ -1389,7 +1148,6 @@ void sensorRead(lightsObject* self){
      908:	82 e0       	ldi	r24, 0x02	; 2
      90a:	90 e0       	ldi	r25, 0x00	; 0
      90c:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-        if( !(self->carsNorth <= 0) && (self->carsRow <=5 | self->carsSouth <= 0)){ 
      910:	88 85       	ldd	r24, Y+8	; 0x08
      912:	99 85       	ldd	r25, Y+9	; 0x09
      914:	18 16       	cp	r1, r24
@@ -1413,7 +1171,6 @@ void sensorRead(lightsObject* self){
      938:	80 e0       	ldi	r24, 0x00	; 0
      93a:	88 23       	and	r24, r24
      93c:	31 f1       	breq	.+76     	; 0x98a <sensorRead+0x124>
-            ASYNC(self->serial, USART_Transmit, 0xA) ;               // 0xA = 1010 all red on and green off
      93e:	0c 81       	ldd	r16, Y+4	; 0x04
      940:	1d 81       	ldd	r17, Y+5	; 0x05
      942:	0f 2e       	mov	r0, r31
@@ -1434,7 +1191,6 @@ void sensorRead(lightsObject* self){
      960:	70 e0       	ldi	r23, 0x00	; 0
      962:	cb 01       	movw	r24, r22
      964:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-            AFTER(MSEC(1000), self->serial, USART_Transmit, 0x9);    // 0x9 = 1001 green north and red south on
      968:	0c 81       	ldd	r16, Y+4	; 0x04
      96a:	1d 81       	ldd	r17, Y+5	; 0x05
      96c:	0f 2e       	mov	r0, r31
@@ -1451,8 +1207,6 @@ void sensorRead(lightsObject* self){
      982:	90 e0       	ldi	r25, 0x00	; 0
      984:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      988:	a1 c0       	rjmp	.+322    	; 0xacc <sensorRead+0x266>
-        }else{
-            ASYNC(self, closeBridge, NULL); //switch direction
      98a:	c1 2c       	mov	r12, r1
      98c:	d1 2c       	mov	r13, r1
      98e:	0f 2e       	mov	r0, r31
@@ -1470,20 +1224,13 @@ void sensorRead(lightsObject* self){
      9a6:	cb 01       	movw	r24, r22
      9a8:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      9ac:	8f c0       	rjmp	.+286    	; 0xacc <sensorRead+0x266>
-            //closeBridge(self);
-        }       
-        
-	}else if(self->serial->inData & (1<<2)){ //  south car arrival
      9ae:	82 ff       	sbrs	r24, 2
      9b0:	17 c0       	rjmp	.+46     	; 0x9e0 <sensorRead+0x17a>
-        self->carsSouth++;
      9b2:	8a 85       	ldd	r24, Y+10	; 0x0a
      9b4:	9b 85       	ldd	r25, Y+11	; 0x0b
      9b6:	01 96       	adiw	r24, 0x01	; 1
      9b8:	9b 87       	std	Y+11, r25	; 0x0b
      9ba:	8a 87       	std	Y+10, r24	; 0x0a
-        //startCars(self);
-        ASYNC(self,startCars, NULL);
      9bc:	c1 2c       	mov	r12, r1
      9be:	d1 2c       	mov	r13, r1
      9c0:	0f 2e       	mov	r0, r31
@@ -1501,9 +1248,6 @@ void sensorRead(lightsObject* self){
      9d8:	cb 01       	movw	r24, r22
      9da:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      9de:	76 c0       	rjmp	.+236    	; 0xacc <sensorRead+0x266>
-
-
-	}else if(self->serial->inData & (1<<3)  && (self->bridgeLock == 0) ){ // south car bridge entry
      9e0:	83 ff       	sbrs	r24, 3
      9e2:	74 c0       	rjmp	.+232    	; 0xacc <sensorRead+0x266>
      9e4:	8c 89       	ldd	r24, Y+20	; 0x14
@@ -1511,25 +1255,21 @@ void sensorRead(lightsObject* self){
      9e8:	89 2b       	or	r24, r25
      9ea:	09 f0       	breq	.+2      	; 0x9ee <sensorRead+0x188>
      9ec:	6f c0       	rjmp	.+222    	; 0xacc <sensorRead+0x266>
-        self->carsSouth--;
      9ee:	8a 85       	ldd	r24, Y+10	; 0x0a
      9f0:	9b 85       	ldd	r25, Y+11	; 0x0b
      9f2:	01 97       	sbiw	r24, 0x01	; 1
      9f4:	9b 87       	std	Y+11, r25	; 0x0b
      9f6:	8a 87       	std	Y+10, r24	; 0x0a
-        self->carsOnBridge++;
      9f8:	8e 81       	ldd	r24, Y+6	; 0x06
      9fa:	9f 81       	ldd	r25, Y+7	; 0x07
      9fc:	01 96       	adiw	r24, 0x01	; 1
      9fe:	9f 83       	std	Y+7, r25	; 0x07
      a00:	8e 83       	std	Y+6, r24	; 0x06
-        self->carsRow++;
      a02:	8a 89       	ldd	r24, Y+18	; 0x12
      a04:	9b 89       	ldd	r25, Y+19	; 0x13
      a06:	01 96       	adiw	r24, 0x01	; 1
      a08:	9b 8b       	std	Y+19, r25	; 0x13
      a0a:	8a 8b       	std	Y+18, r24	; 0x12
-        AFTER(MSEC(5000), self, carOffBridge, NULL);    // 
      a0c:	c1 2c       	mov	r12, r1
      a0e:	d1 2c       	mov	r13, r1
      a10:	0f 2e       	mov	r0, r31
@@ -1547,7 +1287,6 @@ void sensorRead(lightsObject* self){
      a28:	82 e0       	ldi	r24, 0x02	; 2
      a2a:	90 e0       	ldi	r25, 0x00	; 0
      a2c:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-        if( !(self->carsSouth <= 0) && (self->carsRow <=5  | self->carsNorth <= 0) ){
      a30:	8a 85       	ldd	r24, Y+10	; 0x0a
      a32:	9b 85       	ldd	r25, Y+11	; 0x0b
      a34:	18 16       	cp	r1, r24
@@ -1571,7 +1310,6 @@ void sensorRead(lightsObject* self){
      a58:	80 e0       	ldi	r24, 0x00	; 0
      a5a:	88 23       	and	r24, r24
      a5c:	31 f1       	breq	.+76     	; 0xaaa <sensorRead+0x244>
-            ASYNC(self->serial, USART_Transmit, 0xA);                // 0xA = 1010 all red on and green off
      a5e:	0c 81       	ldd	r16, Y+4	; 0x04
      a60:	1d 81       	ldd	r17, Y+5	; 0x05
      a62:	0f 2e       	mov	r0, r31
@@ -1592,7 +1330,6 @@ void sensorRead(lightsObject* self){
      a80:	70 e0       	ldi	r23, 0x00	; 0
      a82:	cb 01       	movw	r24, r22
      a84:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-            AFTER(MSEC(1000),self->serial, USART_Transmit, 0x6);     // 0x6 = 0110 green south and red north on
      a88:	0c 81       	ldd	r16, Y+4	; 0x04
      a8a:	1d 81       	ldd	r17, Y+5	; 0x05
      a8c:	0f 2e       	mov	r0, r31
@@ -1609,9 +1346,6 @@ void sensorRead(lightsObject* self){
      aa2:	90 e0       	ldi	r25, 0x00	; 0
      aa4:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
      aa8:	11 c0       	rjmp	.+34     	; 0xacc <sensorRead+0x266>
-
-        }else {
-            ASYNC(self, closeBridge, NULL); //switch direction
      aaa:	c1 2c       	mov	r12, r1
      aac:	d1 2c       	mov	r13, r1
      aae:	0f 2e       	mov	r0, r31
@@ -1628,11 +1362,6 @@ void sensorRead(lightsObject* self){
      ac4:	70 e0       	ldi	r23, 0x00	; 0
      ac6:	cb 01       	movw	r24, r22
      ac8:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-
-        } 
-        
-	}
-    ASYNC(self, updateLCD, NULL);	
      acc:	c1 2c       	mov	r12, r1
      ace:	d1 2c       	mov	r13, r1
      ad0:	0f 2e       	mov	r0, r31
@@ -1649,7 +1378,6 @@ void sensorRead(lightsObject* self){
      ae6:	70 e0       	ldi	r23, 0x00	; 0
      ae8:	cb 01       	movw	r24, r22
      aea:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-}
      aee:	df 91       	pop	r29
      af0:	cf 91       	pop	r28
      af2:	1f 91       	pop	r17
@@ -1685,58 +1413,30 @@ void sensorRead(lightsObject* self){
      b14:	08 95       	ret
 
 00000b16 <run>:
-void test(runObj* self){
-    printAt(23,0);
-}
-
-
-void run(runObj* self){
      b16:	cf 93       	push	r28
      b18:	df 93       	push	r29
      b1a:	ec 01       	movw	r28, r24
-    LCD_Init();
      b1c:	0e 94 57 00 	call	0xae	; 0xae <LCD_Init>
-    USART_Init (self->serial);
      b20:	8c 81       	ldd	r24, Y+4	; 0x04
      b22:	9d 81       	ldd	r25, Y+5	; 0x05
      b24:	0e 94 e9 11 	call	0x23d2	; 0x23d2 <USART_Init>
-
-    INSTALL(self->lights, sensorRead, IRQ_USART0_RX);
      b28:	48 e0       	ldi	r20, 0x08	; 8
      b2a:	63 e3       	ldi	r22, 0x33	; 51
      b2c:	74 e0       	ldi	r23, 0x04	; 4
      b2e:	8e 81       	ldd	r24, Y+6	; 0x06
      b30:	9f 81       	ldd	r25, Y+7	; 0x07
      b32:	0e 94 b3 11 	call	0x2366	; 0x2366 <install>
-    
-
-    //INSTALL(self,interupts, IRQ_USART0_RX);
-    //INSTALL(self,interupts, IRQ_USART0_UDRE);
-    //INSTALL(self,interupts, IRQ_USART0_TX);
-    printAt(0, 4);
      b36:	44 e0       	ldi	r20, 0x04	; 4
      b38:	50 e0       	ldi	r21, 0x00	; 0
      b3a:	60 e0       	ldi	r22, 0x00	; 0
      b3c:	70 e0       	ldi	r23, 0x00	; 0
      b3e:	cb 01       	movw	r24, r22
      b40:	0e 94 a6 02 	call	0x54c	; 0x54c <printAt>
-        //printAt(test,0);
-
-        //pushToSerial(0x1);
-    
-
-}
      b44:	df 91       	pop	r29
      b46:	cf 91       	pop	r28
      b48:	08 95       	ret
 
 00000b4a <initialize>:
-    Time now;
-    DISABLE(status);
-    TIMERGET(now);
-    ENABLE(status);
-    return now - (status ? current->msg->baseline : timestamp);
-}
      b4a:	cf 93       	push	r28
      b4c:	df 93       	push	r29
      b4e:	00 d0       	rcall	.+0      	; 0xb50 <initialize+0x6>
@@ -4414,19 +4114,10 @@ void run(runObj* self){
     2364:	92 cf       	rjmp	.-220    	; 0x228a <run>
 
 00002366 <install>:
-    
-    TIMER_INIT();
-}
-
-void install(Object *obj, Method m, enum Vector i) {
-    if (i >= 0 && i < N_VECTORS) {
     2366:	42 31       	cpi	r20, 0x12	; 18
     2368:	b8 f4       	brcc	.+46     	; 0x2398 <install+0x32>
-        char status;
-        DISABLE(status);
     236a:	2f b7       	in	r18, 0x3f	; 63
     236c:	f8 94       	cli
-        otable[i] = obj;
     236e:	50 e0       	ldi	r21, 0x00	; 0
     2370:	44 0f       	add	r20, r20
     2372:	55 1f       	adc	r21, r21
@@ -4435,46 +4126,32 @@ void install(Object *obj, Method m, enum Vector i) {
     2378:	fe 4f       	sbci	r31, 0xFE	; 254
     237a:	91 83       	std	Z+1, r25	; 0x01
     237c:	80 83       	st	Z, r24
-        mtable[i] = m;
     237e:	fa 01       	movw	r30, r20
     2380:	e0 53       	subi	r30, 0x30	; 48
     2382:	fe 4f       	sbci	r31, 0xFE	; 254
     2384:	71 83       	std	Z+1, r23	; 0x01
     2386:	60 83       	st	Z, r22
-        obj->wantedBy = INSTALLED_TAG;  // Mark object as subject to synchronization by interrupt disabling
     2388:	41 e0       	ldi	r20, 0x01	; 1
     238a:	50 e0       	ldi	r21, 0x00	; 0
     238c:	fc 01       	movw	r30, r24
     238e:	53 83       	std	Z+3, r21	; 0x03
     2390:	42 83       	std	Z+2, r20	; 0x02
-        ENABLE(status);
     2392:	22 23       	and	r18, r18
     2394:	0c f4       	brge	.+2      	; 0x2398 <install+0x32>
     2396:	78 94       	sei
     2398:	08 95       	ret
 
 0000239a <tinytimber>:
-    }
-}
-
-int tinytimber(Object *obj, Method m, int arg) {
     239a:	8c 01       	movw	r16, r24
     239c:	7b 01       	movw	r14, r22
     239e:	6a 01       	movw	r12, r20
-    char status;
-    DISABLE(status);
     23a0:	8f b7       	in	r24, 0x3f	; 63
     23a2:	f8 94       	cli
-    initialize();
     23a4:	0e 94 a5 05 	call	0xb4a	; 0xb4a <initialize>
-    ENABLE(1);
     23a8:	78 94       	sei
-    if (m != NULL)
     23aa:	e1 14       	cp	r14, r1
     23ac:	f1 04       	cpc	r15, r1
     23ae:	41 f0       	breq	.+16     	; 0x23c0 <tinytimber+0x26>
-        //m(obj, arg);
-		ASYNC(obj,m,arg);
     23b0:	20 e0       	ldi	r18, 0x00	; 0
     23b2:	30 e0       	ldi	r19, 0x00	; 0
     23b4:	a9 01       	movw	r20, r18
@@ -4482,108 +4159,60 @@ int tinytimber(Object *obj, Method m, int arg) {
     23b8:	70 e0       	ldi	r23, 0x00	; 0
     23ba:	cb 01       	movw	r24, r22
     23bc:	0e 94 a7 0f 	call	0x1f4e	; 0x1f4e <async>
-    DISABLE(status);
     23c0:	8f b7       	in	r24, 0x3f	; 63
     23c2:	f8 94       	cli
-        }
-    }
-}
-
-static void idle(void) {
-    schedule();
     23c4:	0e 94 30 06 	call	0xc60	; 0xc60 <schedule>
-    ENABLE(1);
     23c8:	78 94       	sei
-    while (1) {
-        SLEEP();
     23ca:	81 e0       	ldi	r24, 0x01	; 1
     23cc:	83 bf       	out	0x33, r24	; 51
     23ce:	88 95       	sleep
     23d0:	fd cf       	rjmp	.-6      	; 0x23cc <tinytimber+0x32>
 
 000023d2 <USART_Init>:
-
-void USART_Init(serialObj* self)
-{
-/* Set baud rate */
-//UBRR0H = (unsigned char)(MYUBRR>>8);
-UBRR0L = (unsigned char)(MYUBRR);
     23d2:	83 e3       	ldi	r24, 0x33	; 51
     23d4:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7fc0c4>
-
-
-
-/* Enable receiver and transmitter  and enables interupts*/
-UCSR0B |= (1<<RXEN0)|(1<<TXEN0);  // receiver and transmitter 
     23d8:	e1 ec       	ldi	r30, 0xC1	; 193
     23da:	f0 e0       	ldi	r31, 0x00	; 0
     23dc:	80 81       	ld	r24, Z
     23de:	88 61       	ori	r24, 0x18	; 24
     23e0:	80 83       	st	Z, r24
-UCSR0B |= (1 << RXCIE0);          //interupts
     23e2:	80 81       	ld	r24, Z
     23e4:	80 68       	ori	r24, 0x80	; 128
     23e6:	80 83       	st	Z, r24
-//UCSR0B |= (1 << TXCIE0);          // transmit inter
-
-
-
-/* Set frame format:  */
-UCSR0C &= ~(1<<USBS0);   //   1 stop bit 
     23e8:	e2 ec       	ldi	r30, 0xC2	; 194
     23ea:	f0 e0       	ldi	r31, 0x00	; 0
     23ec:	80 81       	ld	r24, Z
     23ee:	87 7f       	andi	r24, 0xF7	; 247
     23f0:	80 83       	st	Z, r24
-UCSR0C |= (1<<UCSZ00); 
     23f2:	80 81       	ld	r24, Z
     23f4:	82 60       	ori	r24, 0x02	; 2
     23f6:	80 83       	st	Z, r24
-UCSR0C |= (1<<UCSZ01); // 8 data,
     23f8:	80 81       	ld	r24, Z
     23fa:	84 60       	ori	r24, 0x04	; 4
     23fc:	80 83       	st	Z, r24
     23fe:	08 95       	ret
 
 00002400 <USART_Receive>:
-
-}
-
-
-unsigned int USART_Receive(serialObj* self)
-{
     2400:	dc 01       	movw	r26, r24
-	while(!(UCSR0A & (1<<RXC0)));
     2402:	e0 ec       	ldi	r30, 0xC0	; 192
     2404:	f0 e0       	ldi	r31, 0x00	; 0
     2406:	90 81       	ld	r25, Z
     2408:	99 23       	and	r25, r25
     240a:	ec f7       	brge	.-6      	; 0x2406 <USART_Receive+0x6>
-	self->inData = UDR0;
     240c:	20 91 c6 00 	lds	r18, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fc0c6>
     2410:	30 e0       	ldi	r19, 0x00	; 0
     2412:	15 96       	adiw	r26, 0x05	; 5
     2414:	3c 93       	st	X, r19
     2416:	2e 93       	st	-X, r18
     2418:	14 97       	sbiw	r26, 0x04	; 4
-
-}
     241a:	08 95       	ret
 
 0000241c <USART_Transmit>:
-
-
-void USART_Transmit(serialObj* self, unsigned int data )
-{
-/* Wait for empty transmit buffer */
-while ( !( UCSR0A & (1<<UDRE0))) ;
     241c:	e0 ec       	ldi	r30, 0xC0	; 192
     241e:	f0 e0       	ldi	r31, 0x00	; 0
     2420:	80 81       	ld	r24, Z
     2422:	85 ff       	sbrs	r24, 5
     2424:	fd cf       	rjmp	.-6      	; 0x2420 <USART_Transmit+0x4>
-/* Put data into buffer, sends the data */
-UDR0 = data;
     2426:	60 93 c6 00 	sts	0x00C6, r22	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fc0c6>
     242a:	08 95       	ret
 
